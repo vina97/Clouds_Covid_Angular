@@ -6,7 +6,7 @@ export class Info {
     newRecovery: number
     totalDeath: number
     newDeath: number
-    activecases: number
+    activeCases: number
     recoveryRate: number
     mortalityRate: number
 
@@ -18,13 +18,12 @@ export class Info {
         this.newRecovery = recnew;
         this.totalDeath = death;
         this.newDeath = deathnew;
-        this.activecases = total - rec - death
+        this.activeCases = total - rec - death
         this.recoveryRate = rec / total * 100
         this.mortalityRate = death / total * 100
     }
 
-    getName() {
-        return this.name
-    }
+
+
 }
 

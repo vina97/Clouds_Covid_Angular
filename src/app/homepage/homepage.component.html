@@ -3,17 +3,51 @@
         alt="covid logo" width="40" height="40">
     <h1 span>Covid-19</h1>
     <p>Live updates and news</p>
-    <table class="striped">
-        <thead>
-            <title>Covid cases Worldwide</title>
-        </thead>
+    <table class="table table-bordered">
         <tbody>
-            <tr>
-                <td>Total Cases</td>
-                <td>{{total.totalCases}}</td>
+            <tr class="table-warning">
+                <td>Total cases</td>
+                <td>{{numberWithCommas(total.totalCases)}}</td>
+            </tr>
+            <tr class="table-warning">
+                <td>New cases</td>
+                <td>{{numberWithCommas(total.newCases)}}</td>
+            </tr>
+            <tr class="table-warning">
+                <td>Active cases</td>
+                <td>{{numberWithCommas(total.activeCases)}}</td>
+            </tr>
+            <tr class="table-info">
+                <td>Total Recovered</td>
+                <td>{{numberWithCommas(total.totalRecovery)}}</td>
+            </tr>
+            <tr class="table-info">
+                <td>New Recovered</td>
+                <td>{{numberWithCommas(total.newRecovery)}}</td>
+            </tr>
+            <tr class="table-info">
+                <td>Recovery rate</td>
+                <td>{{total.recoveryRate }}%</td>
+            </tr>
+            <tr class="table-danger">
+                <td>Total Deaths</td>
+                <td>{{numberWithCommas(total.totalDeath)}}</td>
+            </tr>
+            <tr class="table-danger">
+                <td>New Deaths</td>
+                <td>{{numberWithCommas(total.newDeath)}}</td>
+            </tr>
+            <tr class="table-danger">
+                <td>Mortality rate </td>
+                <td>{{total.mortalityRate}}%</td>
             </tr>
         </tbody>
-
-
     </table>
+
+    <div class="chart" style="height:10px;">
+        <canvas baseChart [data]="pieChartData" [labels]="pieChartLabels" [chartType]="pieChartType"
+            [options]="pieChartOptions" [plugins]="pieChartPlugins" [colors]="pieChartColors" [legend]="pieChartLegend">
+        </canvas>
+    </div>
+
 </div>
