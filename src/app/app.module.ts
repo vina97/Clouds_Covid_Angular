@@ -13,6 +13,8 @@ import { SigninComponent } from './signin/signin.component';
 import { CountryComponent } from './country/country.component';
 import { NewsComponent } from './news/news.component';
 import { ChartsModule } from 'ng2-charts';
+import { HttpClientModule } from '@angular/common/http';
+
 
 @NgModule({
   declarations: [
@@ -27,7 +29,8 @@ import { ChartsModule } from 'ng2-charts';
     AppRoutingModule,
     AngularFireModule.initializeApp(environment.firebaseConfig),
     AngularFirestoreModule,
-    ChartsModule
+    ChartsModule,
+    HttpClientModule
   ],
   providers: [],
   bootstrap: [AppComponent]
