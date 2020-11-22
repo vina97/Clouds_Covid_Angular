@@ -1,8 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { CovidService } from '../covid.service';
 import { Info } from '../info.model';
-import { ChartType, ChartOptions } from 'chart.js';
+import { ChartType, ChartOptions, ChartDataSets } from 'chart.js';
 import { Label } from 'ng2-charts';
+import { formatDate } from '@angular/common';
 
 
 @Component({
@@ -32,10 +33,41 @@ export class HomepageComponent implements OnInit {
       this.byCountry = new Array<Info>();
       for (let i = 0; i < data["Countries"].length; i++) {
         let elem = data["Countries"][i]
-        console.log(elem)
         this.byCountry.push(new Info(elem["Country"], elem["TotalConfirmed"], elem["NewConfirmed"], elem["TotalRecovered"], elem["NewRecovered"], elem["TotalDeaths"], elem["NewDeaths"]))
       }
-      console.log(this.byCountry)
+    })
+    this.covidService.getLastSeven().toPromise().then(data => {
+      let sortable = []
+      for (let elem in data) {
+        sortable.push(data[elem])
+      }
+      sortable.sort(function (a, b) {
+        var x = a["TotalConfirmed"]; var y = b["TotalConfirmed"];
+        return ((x < y) ? -1 : ((x > y) ? 1 : 0));
+      })
+      console.log(sortable)
+      let newConf = []
+      let newDeath = []
+      let newRec = []
+      let i = 7
+      let labels = []
+      for (let elem in sortable) {
+        newConf.push(sortable[elem]["NewConfirmed"])
+        newRec.push(sortable[elem]["NewRecovered"])
+        newDeath.push(sortable[elem]["NewDeaths"])
+        labels.push(formatDate(new Date(new Date().getTime() - (i * 24 * 60 * 60 * 1000)), 'dd MMM', 'en'))
+        i = i - 1
+      }
+      console.log(newDeath)
+      console.log(labels)
+      //newConf.push(this.total["NewConfirmed"])
+      //newRec.push(this.total["NewRecovered"])
+      //newDeath.push(this.total["NewDeath"])
+      labels.push(formatDate(new Date(new Date().getTime()), 'dd MMM', 'en'))
+      this.barChartLabels = labels
+      this.barChartData = [{ data: newConf, label: "New Confirmed" }, { data: newRec, label: "New Recovered" }, { data: newDeath, label: "New Death" }]
+
+
     })
     //console.log(d["Global:"])
     //console.log(this.total)
@@ -43,10 +75,6 @@ export class HomepageComponent implements OnInit {
     //this.getFromApril()
   }
 
-  getGeneralInfo() {
-
-
-  }
 
   getLastSeven() {
     //this.covidService.getLastSeven().subscribe(result => this.lastSeven=result)  
@@ -83,5 +111,20 @@ export class HomepageComponent implements OnInit {
       backgroundColor: ['rgba(223, 71, 89,0.5)', 'rgba(91, 192, 222,0.5)', 'rgba(240, 173, 78,0.5)'],
     },
   ];
+
+  public barChartOptions: ChartOptions = {
+    responsive: true,
+    scales: {
+      yAxes: [{
+        ticks: {
+          min: 0,
+        }
+      }]
+    }
+  };
+  public barChartLabels: Label[] = [];
+  public barChartType: ChartType = 'bar';
+  public barChartLegend = true;
+  public barChartData: ChartDataSets[] = []
 
 }

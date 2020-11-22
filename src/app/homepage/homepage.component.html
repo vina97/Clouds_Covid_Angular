@@ -27,7 +27,7 @@
             </tr>
             <tr class="table-info">
                 <td>Recovery rate</td>
-                <td>{{total.recoveryRate }}%</td>
+                <td>{{total.recoveryRate.toString() | number:'1.1-2' }}%</td>
             </tr>
             <tr class="table-danger">
                 <td>Total Deaths</td>
@@ -39,15 +39,22 @@
             </tr>
             <tr class="table-danger">
                 <td>Mortality rate </td>
-                <td>{{total.mortalityRate}}%</td>
+                <td>{{total.mortalityRate.toString() | number:'1.1-2' }}%</td>
             </tr>
         </tbody>
     </table>
 
-    <div class="chart" style="height:10px;">
+    <div class="chart">
         <canvas baseChart [data]="pieChartData" [labels]="pieChartLabels" [chartType]="pieChartType"
-            [options]="pieChartOptions" [plugins]="pieChartPlugins" [colors]="pieChartColors" [legend]="pieChartLegend">
+            [options]="pieChartOptions" [colors]="pieChartColors" [legend]="pieChartLegend">
         </canvas>
     </div>
+
+    <div>
+        <canvas baseChart [datasets]="barChartData" [labels]="barChartLabels" [options]="barChartOptions"
+            [legend]="barChartLegend" [chartType]="barChartType">
+        </canvas>
+    </div>
+
 
 </div>
