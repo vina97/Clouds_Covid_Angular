@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { CovidService } from '../covid.service';
 import { Info } from '../info.model';
 import { ChartType, ChartOptions, ChartDataSets } from 'chart.js';
-import { Label } from 'ng2-charts';
+import { Color, Label } from 'ng2-charts';
 import { formatDate } from '@angular/common';
 
 
@@ -36,6 +36,7 @@ export class HomepageComponent implements OnInit {
         this.byCountry.push(new Info(elem["Country"], elem["TotalConfirmed"], elem["NewConfirmed"], elem["TotalRecovered"], elem["NewRecovered"], elem["TotalDeaths"], elem["NewDeaths"]))
       }
     })
+
     this.covidService.getLastSeven().toPromise().then(data => {
       let sortable = []
       for (let elem in data) {
@@ -45,7 +46,6 @@ export class HomepageComponent implements OnInit {
         var x = a["TotalConfirmed"]; var y = b["TotalConfirmed"];
         return ((x < y) ? -1 : ((x > y) ? 1 : 0));
       })
-      console.log(sortable)
       let newConf = []
       let newDeath = []
       let newRec = []
@@ -58,22 +58,53 @@ export class HomepageComponent implements OnInit {
         labels.push(formatDate(new Date(new Date().getTime() - (i * 24 * 60 * 60 * 1000)), 'dd MMM', 'en'))
         i = i - 1
       }
-      console.log(newDeath)
-      console.log(labels)
       //newConf.push(this.total["NewConfirmed"])
       //newRec.push(this.total["NewRecovered"])
       //newDeath.push(this.total["NewDeath"])
       labels.push(formatDate(new Date(new Date().getTime()), 'dd MMM', 'en'))
       this.barChartLabels = labels
-      this.barChartData = [{ data: newConf, label: "New Confirmed" }, { data: newRec, label: "New Recovered" }, { data: newDeath, label: "New Death" }]
-
-
+      this.barChartData = [{ data: newDeath, label: "New Death" }, { data: newRec, label: "New Recovered" }, { data: newConf, label: "New Confirmed" }]
     })
-    //console.log(d["Global:"])
-    //console.log(this.total)
-    //this.getLastSeven()
-    //this.getFromApril()
+
+    this.covidService.getFromApril().toPromise().then(data => {
+      let sortable = []
+      for (let elem in data) {
+        sortable.push(data[elem])
+      }
+
+
+      let totalConf = []
+      let totalDeath = []
+      let totalRec = []
+      let i = sortable.length
+      let labels = []
+      for (let elem in sortable) {
+        totalConf.push(sortable[elem]["TotalConfirmed"])
+        totalRec.push(sortable[elem]["TotalRecovered"])
+        totalDeath.push(sortable[elem]["TotalDeaths"])
+        labels.push(formatDate(new Date(new Date().getTime() - (i * 24 * 60 * 60 * 1000)), 'dd MMM', 'en'))
+        i = i - 1
+      }
+      this.lineChartLabels = labels;
+      totalConf.sort(function (a, b) {
+        var x = a; var y = b;
+        return ((x < y) ? -1 : ((x > y) ? 1 : 0));
+      })
+      totalDeath.sort(function (a, b) {
+        var x = a; var y = b;
+        return ((x < y) ? -1 : ((x > y) ? 1 : 0));
+      })
+      totalRec.sort(function (a, b) {
+        var x = a; var y = b;
+        return ((x < y) ? -1 : ((x > y) ? 1 : 0));
+      })
+      this.lineChartData = [{ data: totalDeath, label: "Total Deaths" }, { data: totalRec, label: "Total Recoveries" }, { data: totalConf, label: "Total Confirmed" }]
+    }
+
+    )
+
   }
+
 
 
   getLastSeven() {
@@ -126,5 +157,14 @@ export class HomepageComponent implements OnInit {
   public barChartType: ChartType = 'bar';
   public barChartLegend = true;
   public barChartData: ChartDataSets[] = []
+
+  public lineChartData: ChartDataSets[] = []
+  public lineChartLabels: Label[] = [];
+  public lineChartOptions: (ChartOptions) = {
+    responsive: true,
+  };
+
+  public lineChartLegend = true;
+  public lineChartType = 'line';
 
 }

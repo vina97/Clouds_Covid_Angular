@@ -23,4 +23,11 @@ export class CovidService {
     let options: { responseType?: "json" }
     return this.http.get(this.covid_API + "world?from=" + from + "&to=" + now, options)
   }
+
+  getFromApril() {
+    let now = formatDate(new Date(), 'yyyy-MM-dd', 'en');
+    let from = "2020-04-13"
+    let options: { responseType?: "json" }
+    return this.http.get(this.covid_API + "world?from=" + from + "&to=" + now, options)
+  }
 }
