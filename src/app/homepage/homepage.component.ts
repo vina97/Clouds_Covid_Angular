@@ -13,13 +13,59 @@ import { formatDate } from '@angular/common';
 })
 export class HomepageComponent implements OnInit {
 
+  public pieChartOptions: ChartOptions = {
+    responsive: true,
+    legend: {
+      position: 'top',
+    },
+    plugins: {
+      datalabels: {
+        formatter: (value, ctx) => {
+          const label = ctx.chart.data.labels[ctx.dataIndex];
+          return label;
+        },
+      },
+    }
+  };
+  public pieChartLabels: Label[] = ['Dead Cases', 'Recovered Cases', 'Active cases'];
+  public pieChartData: number[] = [5, 3, 2]
+  public pieChartType: ChartType = 'pie';
+  public pieChartLegend = true;
+  public pieChartColors = [
+    {
+      backgroundColor: ['rgba(223, 71, 89,0.5)', 'rgba(91, 192, 222,0.5)', 'rgba(240, 173, 78,0.5)'],
+    },
+  ];
+
+  public barChartOptions: ChartOptions = {
+    responsive: true,
+    scales: {
+      yAxes: [{
+        ticks: {
+          min: 0,
+        }
+      }]
+    }
+  };
+  public barChartLabels: Label[] = [];
+  public barChartType: ChartType = 'bar';
+  public barChartLegend = true;
+  public barChartData: ChartDataSets[] = []
+
+  public lineChartData: ChartDataSets[] = []
+  public lineChartLabels: Label[] = [];
+  public lineChartOptions: (ChartOptions) = {
+    responsive: true,
+  };
+
+  public lineChartLegend = true;
+  public lineChartType = 'line';
 
 
-
-  total: Info;
-  byCountry: Info[];
-  lastSeven: Array<Info>;
-  fromApril: Array<Info>;
+  public total: Info = new Info("test", 0, 0, 0, 0, 0, 0)
+  public byCountry: Info[];
+  public lastSeven: Array<Info>;
+  public fromApril: Array<Info>;
 
   constructor(public covidService: CovidService) { }
 
@@ -119,52 +165,6 @@ export class HomepageComponent implements OnInit {
     return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
   }
 
-  public pieChartOptions: ChartOptions = {
-    responsive: true,
-    legend: {
-      position: 'top',
-    },
-    plugins: {
-      datalabels: {
-        formatter: (value, ctx) => {
-          const label = ctx.chart.data.labels[ctx.dataIndex];
-          return label;
-        },
-      },
-    }
-  };
-  public pieChartLabels: Label[] = ['Dead Cases', 'Recovered Cases', 'Active cases'];
-  public pieChartData: number[] = [5, 3, 2]
-  public pieChartType: ChartType = 'pie';
-  public pieChartLegend = true;
-  public pieChartColors = [
-    {
-      backgroundColor: ['rgba(223, 71, 89,0.5)', 'rgba(91, 192, 222,0.5)', 'rgba(240, 173, 78,0.5)'],
-    },
-  ];
 
-  public barChartOptions: ChartOptions = {
-    responsive: true,
-    scales: {
-      yAxes: [{
-        ticks: {
-          min: 0,
-        }
-      }]
-    }
-  };
-  public barChartLabels: Label[] = [];
-  public barChartType: ChartType = 'bar';
-  public barChartLegend = true;
-  public barChartData: ChartDataSets[] = []
-
-  public lineChartData: ChartDataSets[] = []
-  public lineChartLabels: Label[] = [];
-  public lineChartOptions: (ChartOptions) = {
-    responsive: true,
-  };
-
-  public lineChartLegend = true;
-  public lineChartType = 'line';
 
 }

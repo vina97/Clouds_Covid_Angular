@@ -14,6 +14,10 @@ import { CountryComponent } from './country/country.component';
 import { NewsComponent } from './news/news.component';
 import { ChartsModule } from 'ng2-charts';
 import { HttpClientModule } from '@angular/common/http';
+import { MatTableModule } from '@angular/material/table';
+import { MatPaginatorModule } from '@angular/material/paginator';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations'
+import { MatFormFieldModule } from '@angular/material/form-field';
 
 
 @NgModule({
@@ -30,7 +34,12 @@ import { HttpClientModule } from '@angular/common/http';
     AngularFireModule.initializeApp(environment.firebaseConfig),
     AngularFirestoreModule,
     ChartsModule,
-    HttpClientModule
+    HttpClientModule,
+    MatTableModule,
+    BrowserAnimationsModule,
+    MatPaginatorModule,
+    MatFormFieldModule
+
   ],
   providers: [],
   bootstrap: [AppComponent]

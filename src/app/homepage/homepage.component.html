@@ -3,62 +3,135 @@
         alt="covid logo" width="40" height="40">
     <h1 span>Covid-19</h1>
     <p>Live updates and news</p>
-    <table class="table table-bordered">
-        <tbody>
-            <tr class="table-warning">
-                <td>Total cases</td>
-                <td>{{numberWithCommas(total.totalCases)}}</td>
-            </tr>
-            <tr class="table-warning">
-                <td>New cases</td>
-                <td>{{numberWithCommas(total.newCases)}}</td>
-            </tr>
-            <tr class="table-warning">
-                <td>Active cases</td>
-                <td>{{numberWithCommas(total.activeCases)}}</td>
-            </tr>
-            <tr class="table-info">
-                <td>Total Recovered</td>
-                <td>{{numberWithCommas(total.totalRecovery)}}</td>
-            </tr>
-            <tr class="table-info">
-                <td>New Recovered</td>
-                <td>{{numberWithCommas(total.newRecovery)}}</td>
-            </tr>
-            <tr class="table-info">
-                <td>Recovery rate</td>
-                <td>{{total.recoveryRate.toString() | number:'1.1-2' }}%</td>
-            </tr>
-            <tr class="table-danger">
-                <td>Total Deaths</td>
-                <td>{{numberWithCommas(total.totalDeath)}}</td>
-            </tr>
-            <tr class="table-danger">
-                <td>New Deaths</td>
-                <td>{{numberWithCommas(total.newDeath)}}</td>
-            </tr>
-            <tr class="table-danger">
-                <td>Mortality rate </td>
-                <td>{{total.mortalityRate.toString() | number:'1.1-2' }}%</td>
-            </tr>
-        </tbody>
-    </table>
+    <div>
+        <h3>Corona virus Summary worldwide</h3>
+        <table class="table table-bordered">
+            <tbody>
+                <tr class="table-warning">
+                    <td>Total cases</td>
+                    <td>{{numberWithCommas(total.totalCases)}}</td>
+                </tr>
+                <tr class="table-warning">
+                    <td>New cases</td>
+                    <td>{{numberWithCommas(total.newCases)}}</td>
+                </tr>
+                <tr class="table-warning">
+                    <td>Active cases</td>
+                    <td>{{numberWithCommas(total.activeCases)}}</td>
+                </tr>
+                <tr class="table-info">
+                    <td>Total Recovered</td>
+                    <td>{{numberWithCommas(total.totalRecovery)}}</td>
+                </tr>
+                <tr class="table-info">
+                    <td>New Recovered</td>
+                    <td>{{numberWithCommas(total.newRecovery)}}</td>
+                </tr>
+                <tr class="table-info">
+                    <td>Recovery rate</td>
+                    <td>{{total.recoveryRate.toString()  }}%</td>
+                </tr>
+                <tr class="table-danger">
+                    <td>Total Deaths</td>
+                    <td>{{numberWithCommas(total.totalDeath)}}</td>
+                </tr>
+                <tr class="table-danger">
+                    <td>New Deaths</td>
+                    <td>{{numberWithCommas(total.newDeath)}}</td>
+                </tr>
+                <tr class="table-danger">
+                    <td>Mortality rate </td>
+                    <td>{{total.mortalityRate.toString() }}%</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
 
     <div class="chart">
+        <h3>Corona virus cases distribution worldwide</h3>
         <canvas baseChart [data]="pieChartData" [labels]="pieChartLabels" [chartType]="pieChartType"
             [options]="pieChartOptions" [colors]="pieChartColors" [legend]="pieChartLegend">
         </canvas>
     </div>
 
     <div>
+        <h3>Daily Corona virus cases worldwide</h3>
         <canvas baseChart [datasets]="barChartData" [labels]="barChartLabels" [options]="barChartOptions"
             [legend]="barChartLegend" [chartType]="barChartType">
         </canvas>
     </div>
+    <h3>Total Corona Virus cases worldwide</h3>
     <div style="display: block;">
         <canvas baseChart width="400" height="400" [datasets]="lineChartData" [labels]="lineChartLabels"
             [options]="lineChartOptions" [legend]="lineChartLegend" [chartType]="lineChartType">
         </canvas>
     </div>
+    <h3>Corona virus by country</h3>
+    <table class="table table-bordered">
+        <thead>
+            <th>Country</th>
+            <th>New Cases</th>
+            <th>Total Cases</th>
+            <th>New Recoveries</th>
+            <th>Total Recoveries</th>
+            <th>New Deaths</th>
+            <th>Total Deaths</th>
+        </thead>
+        <tbody>
+            <tr *ngFor="let c of byCountry">
+                <a [routerLink]="['/country', c.name]">
+                    <td>{{c.name}}</td>
+                </a>
+                <td class="table-warning">{{c.newCases}}</td>
+                <td class="table-warning"> {{c.totalCases}}</td>
+                <td class="table-info">{{c.newRecovery}}</td>
+                <td class="table-info">{{c.totalRecovery}}</td>
+                <td class="table-danger">{{c.newDeath}}</td>
+                <td class="table-danger">{{c.totalDeath}}</td>
+
+            </tr>
+        </tbody>
+    </table>
+    <footer>Data source: <a href="https://covid19api.com/">COVID-19 API / John Hopkins CSSE</a></footer>
+    <!--
+    <li *ngFor="let elem of byCountry">
+        {{elem.name}}
+    </li>
+
+
+    <div class="mat-elevation-z8">
+        <table mat-table [dataSource]="dataSource" matSort>
+
+            <ng-container matColumnDef="id">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header> Country name </th>
+                <td mat-cell *matCellDef="let row"> {{row.name}} </td>
+            </ng-container>
+
+            <ng-container matColumnDef="progress">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header> Progress </th>
+                <td mat-cell *matCellDef="let row"> {{row.totalDeath}}% </td>
+            </ng-container>
+
+            <ng-container matColumnDef="name">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header> Name </th>
+                <td mat-cell *matCellDef="let row"> {{row.newDeath}} </td>
+            </ng-container>
+
+            <ng-container matColumnDef="color">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header> Color </th>
+                <td mat-cell *matCellDef="let row" [style.color]="row.color"> {{row.totalCases}} </td>
+            </ng-container>
+
+            <tr mat-header-row *matHeaderRowDef="let displayedColumns"></tr>
+            <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+
+            <tr class="mat-row" *matNoDataRow>
+                <td class="mat-cell" colspan="4">No data matching the filter "{{input.value}}"</td>
+            </tr>
+        </table>
+
+        <mat-paginator [pageSizeOptions]="[5, 10, 25, 100]"></mat-paginator>
+    </div>
+-->
 
 </div>
