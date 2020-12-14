@@ -5,6 +5,7 @@ import { ChartType, ChartOptions, ChartDataSets } from 'chart.js';
 import { Color, Label } from 'ng2-charts';
 import { formatDate } from '@angular/common';
 
+//TODO: sort table, link: https://medium.com/nerd-for-tech/how-to-sort-table-rows-according-column-in-angular-9-b04fdafb4140
 
 @Component({
   selector: 'app-homepage',
