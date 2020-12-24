@@ -6,6 +6,10 @@ import { Color, Label } from 'ng2-charts';
 import { CovidService } from '../covid.service';
 import { formatDate } from '@angular/common';
 
+//TODO: proper country selection
+//TODO: last week data as deltas
+//TODO: backwards link/navigation
+
 @Component({
   selector: 'app-country',
   templateUrl: './country.component.html',
@@ -95,6 +99,7 @@ export class CountryComponent implements OnInit {
       let newRec = []
       let i = 7
       let labels = []
+      //TODO: get difference, not total
       for (let elem in sortable) {
         newConf.push(sortable[elem]["Confirmed"])
         newRec.push(sortable[elem]["Recovered"])

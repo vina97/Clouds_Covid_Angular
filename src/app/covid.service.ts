@@ -6,6 +6,7 @@ import { AngularFireAuth } from '@angular/fire/auth'
 import { AngularFirestore } from '@angular/fire/firestore'
 import { Router } from '@angular/router';
 import { Info } from './info.model';
+import { User } from './user.model';
 
 
 
@@ -14,6 +15,8 @@ import { Info } from './info.model';
 })
 export class CovidService {
 
+  private user: User
+  public ncomm = 0;
   private covid_API = 'https://api.covid19api.com/';  // URL to web api
   constructor(private http: HttpClient, private afAuth: AngularFireAuth,
     private router: Router, private firestore: AngularFirestore) { }
@@ -68,6 +71,7 @@ export class CovidService {
 
   }
 
+  //TODO: fix proper country found 
   getCountryInfoAPI(country_name: string) {
     this.getSummary().toPromise().then(data => {
       let elem = data["Countries"][0]
@@ -90,7 +94,7 @@ export class CovidService {
           last.getMonth() === now.getMonth() &&
           last.getDate() === now.getDate()) {
           console.log("TRUE")
-          return doc.data()
+          return
         }
       }
 
@@ -98,4 +102,51 @@ export class CovidService {
     })
     return this.firestore.collection("Countries").doc(country_name).get()
   }
+
+  public async signInWithGoogle() {
+    const cred = await this.afAuth.signInWithPopup(new firebase.auth.GoogleAuthProvider())
+    this.user = {
+      uid: cred.user.uid,
+      name: cred.user.displayName,
+      email: cred.user.email
+    }
+    this.setUser(this.user);
+  }
+
+  setUser(user) {
+    this.firestore.collection("Users").doc(user.uid).set({
+      name: user.name,
+      email: user.email,
+      status: "None"
+    })
+  }
+
+  public news() {
+    this.router.navigate(['./news'])
+  }
+
+  public getNews() {
+    return this.firestore.collection("AllNews").get()
+  }
+
+  public addNews() {
+    let f = document.forms["news"]
+
+    let n = {
+      image: "https://firebasestorage.googleapis.com/v0/b/covid-project-eurecom.appspot.com/o/covid19_icon.png?alt=media&token=758be0c7-a52f-486e-aec2-05882964bbc1",
+      title: f.elements["title"].value,
+      text: f.elements["description"].value,
+      author: this.user.name,
+      country: "WorldWide",
+      date: new Date().toISOString().split("T")[0],
+    }
+
+    this.ncomm++
+
+    this.firestore.collection("AllNews").doc(this.ncomm.toString()).set(
+      n, { merge: true }
+    )
+    let modal = document.getElementById("exampleModalCenter")
+  }
+
 }

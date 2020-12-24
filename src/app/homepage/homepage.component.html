@@ -1,9 +1,33 @@
+<nav class="navbar navbar-dark bg-dark">
+    <a class="navbar-brand"> Covid-19</a>
+    <a href="home#summary">summary</a>
+    <a href="home#distribution">distribution</a>
+    <a href="home#last7">Last 7 days</a>
+    <a href="home#April">From april</a>
+    <a href="home#countries">Country table</a>
+
+
+
+    <div class="nav-item dropdown">
+        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button" data-toggle="dropdown"
+            aria-haspopup="true" aria-expanded="false">
+            Select Country
+        </a>
+        <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+            <a class="dropdown-item" href="#">Action</a>
+            <a class="dropdown-item" href="#">Another action</a>
+            <a class="dropdown-item" href="#">Something else here</a>
+        </div>
+    </div>
+    <button class="btn btn-success my-2 my-sm-0" type="button" (click)="covidService.signInWithGoogle()">login</button>
+    <button class="btn btn-info my-2 my-sm-0" type="button" (click)="covidService.news()">News</button>
+</nav>
 <div class="text-center">
     <img src="https://firebasestorage.googleapis.com/v0/b/covid-project-eurecom.appspot.com/o/covid19_icon.png?alt=media&token=758be0c7-a52f-486e-aec2-05882964bbc1"
         alt="covid logo" width="40" height="40">
     <h1 span>Covid-19</h1>
     <p>Live updates and news</p>
-    <div>
+    <div id="summary">
         <h3>Corona virus Summary worldwide</h3>
         <table class="table table-bordered">
             <tbody>
@@ -29,7 +53,7 @@
                 </tr>
                 <tr class="table-info">
                     <td>Recovery rate</td>
-                    <td>{{total.recoveryRate.toString()  }}%</td>
+                    <td>{{total.recoveryRate.toString() }}%</td>
                 </tr>
                 <tr class="table-danger">
                     <td>Total Deaths</td>
@@ -47,27 +71,27 @@
         </table>
     </div>
 
-    <div class="chart">
+    <div class="chart" id="distribution">
         <h3>Corona virus cases distribution worldwide</h3>
         <canvas baseChart [data]="pieChartData" [labels]="pieChartLabels" [chartType]="pieChartType"
             [options]="pieChartOptions" [colors]="pieChartColors" [legend]="pieChartLegend">
         </canvas>
     </div>
 
-    <div>
+    <div id="last7">
         <h3>Daily Corona virus cases worldwide</h3>
         <canvas baseChart [datasets]="barChartData" [labels]="barChartLabels" [options]="barChartOptions"
             [legend]="barChartLegend" [chartType]="barChartType">
         </canvas>
     </div>
     <h3>Total Corona Virus cases worldwide</h3>
-    <div style="display: block;">
+    <div style="display: block;" id="April">
         <canvas baseChart width="400" height="400" [datasets]="lineChartData" [labels]="lineChartLabels"
             [options]="lineChartOptions" [legend]="lineChartLegend" [chartType]="lineChartType">
         </canvas>
     </div>
     <h3>Corona virus by country</h3>
-    <table class="table table-bordered">
+    <table class="table table-bordered" id="countries">
         <thead>
             <th>Country</th>
             <th>New Cases</th>
@@ -92,7 +116,6 @@
             </tr>
         </tbody>
     </table>
-    <footer>Data source: <a href="https://covid19api.com/">COVID-19 API / John Hopkins CSSE</a></footer>
     <!--
     <li *ngFor="let elem of byCountry">
         {{elem.name}}
