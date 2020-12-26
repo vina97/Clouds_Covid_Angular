@@ -1,3 +1,26 @@
+<nav class="navbar navbar-dark bg-dark">
+    <a class="navbar-brand" [routerLink]="['/country']"> Covid-19</a>
+    <a href="home#summary">summary</a>
+    <a href="home#distribution">distribution</a>
+    <a href="home#last7">Last 7 days</a>
+    <a href="home#April">From first day</a>
+
+
+
+    <div class="nav-item dropdown">
+        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button" data-toggle="dropdown"
+            aria-haspopup="true" aria-expanded="false">
+            Change country
+        </a>
+        <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+            <a class="dropdown-item" [routerLink]="['/country', c]" *ngFor="let c of covidService.countries">{{c}}</a>
+
+        </div>
+    </div>
+    <button class="btn btn-success my-2 my-sm-0" type="button" (click)="covidService.signInWithGoogle()">login</button>
+    <button class="btn btn-info my-2 my-sm-0" type="button" (click)="covidService.news()">News</button>
+</nav>
+
 <div class="text-center">
     <img src="https://firebasestorage.googleapis.com/v0/b/covid-project-eurecom.appspot.com/o/covid19_icon.png?alt=media&token=758be0c7-a52f-486e-aec2-05882964bbc1"
         alt="covid logo" width="40" height="40">
@@ -29,7 +52,7 @@
                 </tr>
                 <tr class="table-info">
                     <td>Recovery rate</td>
-                    <td>{{total.recoveryRate.toString()  }}%</td>
+                    <td>{{total.recoveryRate.toString() }}%</td>
                 </tr>
                 <tr class="table-danger">
                     <td>Total Deaths</td>

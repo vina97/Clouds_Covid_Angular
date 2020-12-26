@@ -4,12 +4,11 @@
     <div class="nav-item dropdown">
         <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button" data-toggle="dropdown"
             aria-haspopup="true" aria-expanded="false">
-            Select Country
+            Filter by Country
         </a>
         <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
-            <a class="dropdown-item" href="#">Action</a>
-            <a class="dropdown-item" href="#">Another action</a>
-            <a class="dropdown-item" href="#">Something else here</a>
+            <a class="dropdown-item" *ngFor="let c of covidService.countries">{{c}}</a>
+
         </div>
     </div>
     <button class="btn btn-success my-2 my-sm-0" type="button" (click)="covidService.signInWithGoogle()">login</button>
@@ -40,6 +39,11 @@
                         <input type="text" id="title"><br>
                         <label for="description">Description</label>
                         <textarea id="description"> </textarea>
+                        <label for="country">Country</label>
+                        <select class="form-control" id="country">
+                            <option>WorldWide</option>
+                            <option *ngFor="let c of covidService.countries">{{c}}</option>
+                        </select>
                     </form>
                 </div>
                 <div class="modal-footer">
@@ -49,5 +53,27 @@
                 </div>
             </div>
         </div>
+    </div>
+</div>
+
+<div class="card border-dark mb-3" *ngFor="let n of news">
+
+    <div class="card-header">
+        <h5 class="card-title">{{n.title}}
+            <p class="card-text"><small class="text-muted">{{n.country}}, {{n.date}}</small></p>
+        </h5>
+        <p class="card-text"><small class="text-muted">{{n.author}}</small></p>
+    </div>
+    <img class="card-img-top border" src={{n.image}} alt="Card image cap" height="200px">
+    <div class="card-body">
+        <p class="card-text">{{n.text}}</p>
+    </div>
+    <div class="card-footer">
+        <button class="btn btn-info my-2 my-sm-0" (click)="covidService.goToCountry(n.country)"
+            *ngIf="n.country=='WorldWide' "> Go to Summary
+            page</button>
+        <button class="btn btn-info my-2 my-sm-0" (click)="covidService.goToCountry(n.country)"
+            *ngIf="n.country!='WorldWide' "> Go to Country
+            page</button>
     </div>
 </div>

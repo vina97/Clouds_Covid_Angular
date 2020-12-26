@@ -14,9 +14,8 @@
             Select Country
         </a>
         <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
-            <a class="dropdown-item" href="#">Action</a>
-            <a class="dropdown-item" href="#">Another action</a>
-            <a class="dropdown-item" href="#">Something else here</a>
+            <a class="dropdown-item" [routerLink]="['/country', c.name]" *ngFor="let c of byCountry">{{c.name}}</a>
+
         </div>
     </div>
     <button class="btn btn-success my-2 my-sm-0" type="button" (click)="covidService.signInWithGoogle()">login</button>

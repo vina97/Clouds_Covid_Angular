@@ -17,6 +17,8 @@ export class CovidService {
 
   private user: User
   public ncomm = 0;
+  public countries = []
+
   private covid_API = 'https://api.covid19api.com/';  // URL to web api
   constructor(private http: HttpClient, private afAuth: AngularFireAuth,
     private router: Router, private firestore: AngularFirestore) { }
@@ -24,7 +26,18 @@ export class CovidService {
   getSummary() {
     let options: { responseType?: "json" }
     return this.http.get(this.covid_API + "summary", options)
+  }
 
+  getCountries() {
+    if (this.countries.length > 0)
+      return;
+    this.http.get(this.covid_API + "summary").subscribe((res) => {
+      for (let el in res["Countries"]) {
+
+        this.countries.push(res["Countries"][el]["Country"])
+      }
+      console.log(this.countries)
+    })
   }
 
   getLastSeven() {
@@ -41,8 +54,8 @@ export class CovidService {
     return this.http.get(this.covid_API + "world?from=" + from + "&to=" + now, options)
   }
 
-  public updateCountryInfo(country: Info) {
-    this.firestore.collection("Countries").doc(country.name).set({
+  public async updateCountryInfo(country: Info) {
+    await this.firestore.collection("Countries").doc(country.name).set({
       name: country.name,
       totalCases: country.totalCases,
       newCases: country.newCases,
@@ -55,6 +68,7 @@ export class CovidService {
       mortalityRate: country.mortalityRate,
       lastUpdate: new Date()
     }, { merge: true })
+    console.log("asfai")
   }
 
   getAllFromCountry(country_name: string) {
@@ -71,35 +85,40 @@ export class CovidService {
 
   }
 
-  //TODO: fix proper country found 
-  getCountryInfoAPI(country_name: string) {
-    this.getSummary().toPromise().then(data => {
-      let elem = data["Countries"][0]
-      this.updateCountryInfo(new Info(elem["Country"], elem["TotalConfirmed"], elem["NewConfirmed"], elem["TotalRecovered"], elem["NewRecovered"], elem["TotalDeaths"], elem["NewDeaths"]))
+  async getCountryInfoAPI(country_name: string) {
+    let index = this.countries.indexOf(country_name)
+    console.log(country_name)
+    console.log(this.countries)
+
+    await this.getSummary().toPromise().then(async data => {
+      let elem = data["Countries"][index]
+      console.log(elem)
+      await this.updateCountryInfo(new Info(elem["Country"], elem["TotalConfirmed"], elem["NewConfirmed"], elem["TotalRecovered"], elem["NewRecovered"], elem["TotalDeaths"], elem["NewDeaths"]))
     })
+    console.log("fafss")
   }
 
 
-  public getCountryInfoDB(country_name: string) {
+  public async getCountryInfoDB(country_name: string) {
+    this.firestore.collection("Countries").doc(country_name).get().subscribe(async (doc) => {
+      let last: Date;
 
-    this.firestore.collection("Countries").doc(country_name).get().subscribe((doc) => {
-      let last: Date
-
-      let now = new Date()
+      let now = new Date();
       if (doc.exists) {
-        last = doc.data()["lastUpdate"].toDate()
-        console.log(last)
+        last = doc.data()["lastUpdate"].toDate();
+        console.log(last);
 
         if (last.getFullYear() === now.getFullYear() &&
           last.getMonth() === now.getMonth() &&
           last.getDate() === now.getDate()) {
-          console.log("TRUE")
-          return
+          return;
         }
       }
-
-      this.getCountryInfoAPI(country_name)
+      console.log("not exist");
+      await this.getCountryInfoAPI(country_name);
+      console.log("added1");
     })
+    console.log("done")
     return this.firestore.collection("Countries").doc(country_name).get()
   }
 
@@ -137,7 +156,7 @@ export class CovidService {
       title: f.elements["title"].value,
       text: f.elements["description"].value,
       author: this.user.name,
-      country: "WorldWide",
+      country: f.elements["country"].value,
       date: new Date().toISOString().split("T")[0],
     }
 
@@ -146,7 +165,17 @@ export class CovidService {
     this.firestore.collection("AllNews").doc(this.ncomm.toString()).set(
       n, { merge: true }
     )
-    let modal = document.getElementById("exampleModalCenter")
+    //let modal = document.getElementById("exampleModalCenter")
+  }
+
+  public goToCountry(cname) {
+    if (cname != "WorldWide") {
+      this.router.navigate(['./country/' + cname])
+    }
+    else {
+      this.router.navigate(['./summary/'])
+    }
+
   }
 
 }

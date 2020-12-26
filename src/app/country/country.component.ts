@@ -6,9 +6,8 @@ import { Color, Label } from 'ng2-charts';
 import { CovidService } from '../covid.service';
 import { formatDate } from '@angular/common';
 
-//TODO: proper country selection
+//TODO: fix first add problem
 //TODO: last week data as deltas
-//TODO: backwards link/navigation
 
 @Component({
   selector: 'app-country',
@@ -77,12 +76,14 @@ export class CountryComponent implements OnInit {
 
 
 
-  ngOnInit(): void {
+  async ngOnInit(): Promise<void> {
+    this.covidService.getCountries()
+
     this.country = this.route.snapshot.paramMap.get('name')
-    this.covidService.getCountryInfoDB(this.country).subscribe((res) => {
-      this.total = new Info(res.data()["name"], res.data()["totalCases"], res.data()["newCases"], res.data()["totalRecovery"], res.data()["newRecovery"], res.data()["totalDeath"], res.data()["newDeath"])
-      this.pieChartData = [this.total.totalDeath, this.total.totalRecovery, this.total.totalCases]
-    })
+      ; (await this.covidService.getCountryInfoDB(this.country)).subscribe((res) => {
+        this.total = new Info(res.data()["name"], res.data()["totalCases"], res.data()["newCases"], res.data()["totalRecovery"], res.data()["newRecovery"], res.data()["totalDeath"], res.data()["newDeath"])
+        this.pieChartData = [this.total.totalDeath, this.total.totalRecovery, this.total.totalCases]
+      })
 
     this.covidService.getLastSevenFromCountry(this.country).subscribe((data) => {
       console.log(data)

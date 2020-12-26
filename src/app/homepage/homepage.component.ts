@@ -8,7 +8,8 @@ import { formatDate } from '@angular/common';
 //TODO: proper table
 //TODO: sort table, link: https://medium.com/nerd-for-tech/how-to-sort-table-rows-according-column-in-angular-9-b04fdafb4140
 //TODO: refactor code for subscription, evaluate multiple components solution (if works?)
-
+//TODO: login in other way
+//TODO: make all feel like loading when still no data
 
 @Component({
   selector: 'app-homepage',
@@ -74,6 +75,7 @@ export class HomepageComponent implements OnInit {
   constructor(public covidService: CovidService) { }
 
   ngOnInit(): void {
+    this.covidService.getCountries()
     this.covidService.getSummary().toPromise().then(data => {
       this.total = new Info("Global", data["Global"]["TotalConfirmed"], data["Global"]["NewConfirmed"], data["Global"]["TotalRecovered"], data["Global"]["NewRecovered"], data["Global"]["TotalDeaths"], data["Global"]["NewDeaths"])
       this.pieChartLabels = ['Dead Cases', 'Recovered Cases', 'Active cases'];
