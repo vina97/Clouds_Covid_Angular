@@ -17,6 +17,10 @@ import { MatTableModule } from '@angular/material/table';
 import { MatPaginatorModule } from '@angular/material/paginator';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations'
 import { MatFormFieldModule } from '@angular/material/form-field';
+import { CountryTableComponent } from './country-table/country-table.component';
+import { PieChartComponent } from './pie-chart/pie-chart.component';
+import { BarChartComponent } from './bar-chart/bar-chart.component';
+import { LineChartComponent } from './line-chart/line-chart.component';
 
 
 @NgModule({
@@ -24,7 +28,11 @@ import { MatFormFieldModule } from '@angular/material/form-field';
     AppComponent,
     HomepageComponent,
     CountryComponent,
-    NewsComponent
+    NewsComponent,
+    CountryTableComponent,
+    PieChartComponent,
+    BarChartComponent,
+    LineChartComponent
   ],
   imports: [
     BrowserModule,

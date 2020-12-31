@@ -7,7 +7,7 @@
             Filter by Country
         </a>
         <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
-            <a class="dropdown-item" *ngFor="let c of covidService.countries">{{c}}</a>
+            <a class="dropdown-item" *ngFor="let c of covidService.countries" (click)="filterByCountry(c)">{{c}}</a>
 
         </div>
     </div>
@@ -19,6 +19,7 @@
     <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModalCenter">
         Add News
     </button>
+
 
     <!-- Modal -->
     <div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog"
@@ -48,8 +49,8 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                    <button type="button" class="btn btn-primary" (click)="covidService.addNews()"
-                        data-dismiss="modal">Upload News</button>
+                    <button type="button" class="btn btn-primary" (click)="addNews()" data-dismiss="modal">Upload
+                        News</button>
                 </div>
             </div>
         </div>

@@ -8,7 +8,12 @@ import { Router } from '@angular/router';
 import { Info } from './info.model';
 import { User } from './user.model';
 
+//TODO: user restrictions
+//TODO: user session storage
+//TODO: signout
+//TODO: valueChanges instead of get
 
+//TODO: handle routes permissions
 
 @Injectable({
   providedIn: 'root'
@@ -18,6 +23,7 @@ export class CovidService {
   private user: User
   public ncomm = 0;
   public countries = []
+  private cnews = "WorldWide"
 
   private covid_API = 'https://api.covid19api.com/';  // URL to web api
   constructor(private http: HttpClient, private afAuth: AngularFireAuth,
@@ -78,7 +84,7 @@ export class CovidService {
 
   getLastSevenFromCountry(country_name: string) {
     let now = formatDate(new Date(), 'yyyy-MM-dd', 'en');
-    let from = formatDate(new Date(new Date().getTime() - (7 * 24 * 60 * 60 * 1000)), 'yyyy-MM-dd', 'en');
+    let from = formatDate(new Date(new Date().getTime() - (8 * 24 * 60 * 60 * 1000)), 'yyyy-MM-dd', 'en');
     let options: { responseType?: "json" }
     console.log(this.covid_API + "country/" + country_name + "?from=" + from + "&to=" + now, options)
     return this.http.get(this.covid_API + "country/" + country_name + "?from=" + from + "&to=" + now, options)
@@ -130,6 +136,7 @@ export class CovidService {
       email: cred.user.email
     }
     this.setUser(this.user);
+    localStorage.setItem("user", JSON.stringify(this.user))
   }
 
   setUser(user) {
@@ -140,31 +147,41 @@ export class CovidService {
     })
   }
 
+  public getUser(): User {
+    if (this.user == null && JSON.parse(localStorage.getItem("User")) !== null) {
+      this.user = JSON.parse(localStorage.getItem("User"))
+    }
+    return this.user
+  }
+
+  public signOut() {
+    this.user = null;
+    localStorage.removeItem("User")
+    this.router.navigate(["/home"])
+  }
+
   public news() {
     this.router.navigate(['./news'])
   }
 
   public getNews() {
-    return this.firestore.collection("AllNews").get()
+    return this.firestore.collection("AllNews",).get()
   }
 
-  public addNews() {
-    let f = document.forms["news"]
-
-    let n = {
-      image: "https://firebasestorage.googleapis.com/v0/b/covid-project-eurecom.appspot.com/o/covid19_icon.png?alt=media&token=758be0c7-a52f-486e-aec2-05882964bbc1",
-      title: f.elements["title"].value,
-      text: f.elements["description"].value,
-      author: this.user.name,
-      country: f.elements["country"].value,
-      date: new Date().toISOString().split("T")[0],
-    }
+  public addNews(n) {
 
     this.ncomm++
 
     this.firestore.collection("AllNews").doc(this.ncomm.toString()).set(
       n, { merge: true }
     )
+
+    if (n.country != "WorldWide") {
+      this.firestore.collection("Countries").doc(n.country).collection("News").doc(this.ncomm.toString()).set(
+        n, { merge: true }
+      )
+
+    }
     //let modal = document.getElementById("exampleModalCenter")
   }
 
@@ -176,6 +193,15 @@ export class CovidService {
       this.router.navigate(['./summary/'])
     }
 
+  }
+
+  public filterNews(country) {
+    this.cnews = country
+    if (country != "WorldWide") {
+      return this.firestore.collection("Countries").doc(country).collection("News").get()
+    }
+    else
+      return this.getNews()
   }
 
 }

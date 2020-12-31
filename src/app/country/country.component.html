@@ -26,70 +26,13 @@
         alt="covid logo" width="40" height="40">
     <h1 span>Covid-19-{{country}}</h1>
     <p>Live updates and news</p>
-    <div>
-        <h3>Corona virus Summary {{country}}</h3>
-        <table class="table table-bordered">
-            <tbody>
-                <tr class="table-warning">
-                    <td>Total cases</td>
-                    <td>{{numberWithCommas(total.totalCases)}}</td>
-                </tr>
-                <tr class="table-warning">
-                    <td>New cases</td>
-                    <td>{{numberWithCommas(total.newCases)}}</td>
-                </tr>
-                <tr class="table-warning">
-                    <td>Active cases</td>
-                    <td>{{numberWithCommas(total.activeCases)}}</td>
-                </tr>
-                <tr class="table-info">
-                    <td>Total Recovered</td>
-                    <td>{{numberWithCommas(total.totalRecovery)}}</td>
-                </tr>
-                <tr class="table-info">
-                    <td>New Recovered</td>
-                    <td>{{numberWithCommas(total.newRecovery)}}</td>
-                </tr>
-                <tr class="table-info">
-                    <td>Recovery rate</td>
-                    <td>{{total.recoveryRate.toString() }}%</td>
-                </tr>
-                <tr class="table-danger">
-                    <td>Total Deaths</td>
-                    <td>{{numberWithCommas(total.totalDeath)}}</td>
-                </tr>
-                <tr class="table-danger">
-                    <td>New Deaths</td>
-                    <td>{{numberWithCommas(total.newDeath)}}</td>
-                </tr>
-                <tr class="table-danger">
-                    <td>Mortality rate </td>
-                    <td>{{total.mortalityRate.toString() }}%</td>
-                </tr>
-            </tbody>
-        </table>
-    </div>
-
-    <div class="chart">
-        <h3>Corona virus cases distribution in {{country}}</h3>
-        <canvas baseChart [data]="pieChartData" [labels]="pieChartLabels" [chartType]="pieChartType"
-            [options]="pieChartOptions" [colors]="pieChartColors" [legend]="pieChartLegend">
-        </canvas>
-    </div>
 
     <div>
-        <h3>Daily Corona virus cases in {{country}}</h3>
-        <canvas baseChart [datasets]="barChartData" [labels]="barChartLabels" [options]="barChartOptions"
-            [legend]="barChartLegend" [chartType]="barChartType">
-        </canvas>
+        <app-pie-chart></app-pie-chart>
     </div>
-    <h3>Total Corona Virus cases in {{country}}</h3>
-    <div style="display: block;">
-        <canvas baseChart width="400" height="400" [datasets]="lineChartData" [labels]="lineChartLabels"
-            [options]="lineChartOptions" [legend]="lineChartLegend" [chartType]="lineChartType">
-        </canvas>
-    </div>
-    <footer>Data source: <a href="https://covid19api.com/">COVID-19 API / John Hopkins CSSE</a></footer>
+    <app-bar-chart></app-bar-chart>
+
+    <app-line-chart></app-line-chart>
     <!--
     <li *ngFor="let elem of byCountry">
         {{elem.name}}

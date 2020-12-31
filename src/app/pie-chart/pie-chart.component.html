@@ -1,0 +1,50 @@
+<div id="summary">
+    <h3>Corona virus Summary {{country}}</h3>
+    <table class="table table-bordered">
+        <tbody>
+            <tr class="table-warning">
+                <td>Total cases</td>
+                <td>{{numberWithCommas(total.totalCases)}}</td>
+            </tr>
+            <tr class="table-warning">
+                <td>New cases</td>
+                <td>{{numberWithCommas(total.newCases)}}</td>
+            </tr>
+            <tr class="table-warning">
+                <td>Active cases</td>
+                <td>{{numberWithCommas(total.activeCases)}}</td>
+            </tr>
+            <tr class="table-info">
+                <td>Total Recovered</td>
+                <td>{{numberWithCommas(total.totalRecovery)}}</td>
+            </tr>
+            <tr class="table-info">
+                <td>New Recovered</td>
+                <td>{{numberWithCommas(total.newRecovery)}}</td>
+            </tr>
+            <tr class="table-info">
+                <td>Recovery rate</td>
+                <td>{{total.recoveryRate.toString() }}%</td>
+            </tr>
+            <tr class="table-danger">
+                <td>Total Deaths</td>
+                <td>{{numberWithCommas(total.totalDeath)}}</td>
+            </tr>
+            <tr class="table-danger">
+                <td>New Deaths</td>
+                <td>{{numberWithCommas(total.newDeath)}}</td>
+            </tr>
+            <tr class="table-danger">
+                <td>Mortality rate </td>
+                <td>{{total.mortalityRate.toString() }}%</td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+
+<div class="chart" id="distribution">
+    <h3>Corona virus cases distribution {{country}}</h3>
+    <canvas baseChart [data]="pieChartData" [labels]="pieChartLabels" [chartType]="pieChartType"
+        [options]="pieChartOptions" [colors]="pieChartColors" [legend]="pieChartLegend">
+    </canvas>
+</div>
