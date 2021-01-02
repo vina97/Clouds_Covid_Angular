@@ -18,7 +18,10 @@
 
         </div>
     </div>
-    <button class="btn btn-success my-2 my-sm-0" type="button" (click)="covidService.signInWithGoogle()">login</button>
+    <button class="btn btn-success my-2 my-sm-0" type="button" (click)="covidService.signInWithGoogle()"
+        *ngIf="covidService.getUser().name ==''">login</button>
+    <button class="btn btn-danger my-2 my-sm-0" type="button" (click)="covidService.signOut()"
+        *ngIf="covidService.getUser().name !=''">log-out</button>
     <button class="btn btn-info my-2 my-sm-0" type="button" (click)="covidService.news()">News</button>
 </nav>
 
@@ -35,32 +38,7 @@
 
 
     <app-country-table></app-country-table>
-    <h3>Corona virus by country</h3>
-    <table class="table table-bordered" id="countries">
-        <thead>
-            <th>Country</th>
-            <th>New Cases</th>
-            <th>Total Cases</th>
-            <th>New Recoveries</th>
-            <th>Total Recoveries</th>
-            <th>New Deaths</th>
-            <th>Total Deaths</th>
-        </thead>
-        <tbody>
-            <tr *ngFor="let c of byCountry">
-                <a [routerLink]="['/country', c.name]">
-                    <td>{{c.name}}</td>
-                </a>
-                <td class="table-warning">{{c.newCases}}</td>
-                <td class="table-warning"> {{c.totalCases}}</td>
-                <td class="table-info">{{c.newRecovery}}</td>
-                <td class="table-info">{{c.totalRecovery}}</td>
-                <td class="table-danger">{{c.newDeath}}</td>
-                <td class="table-danger">{{c.totalDeath}}</td>
 
-            </tr>
-        </tbody>
-    </table>
     <!--
     <li *ngFor="let elem of byCountry">
         {{elem.name}}

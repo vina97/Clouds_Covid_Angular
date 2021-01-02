@@ -53,11 +53,11 @@ export class PieChartComponent implements OnInit {
         this.pieChartData = [this.total.totalDeath, this.total.totalRecovery, this.total.activeCases]
         //this.pieChartData.push(this.total.totalRecovery)
         //this.pieChartData.push(this.total.totalDeath)
-
-        /*this.byCountry = new Array<Info>();
+        /*
+        this.covidService.byCountry = new Array<Info>();
         for (let i = 0; i < data["Countries"].length; i++) {
           let elem = data["Countries"][i]
-          this.byCountry.push(new Info(elem["Country"], elem["TotalConfirmed"], elem["NewConfirmed"], elem["TotalRecovered"], elem["NewRecovered"], elem["TotalDeaths"], elem["NewDeaths"]))
+          this.covidService.byCountry.push(new Info(elem["Country"], elem["TotalConfirmed"], elem["NewConfirmed"], elem["TotalRecovered"], elem["NewRecovered"], elem["TotalDeaths"], elem["NewDeaths"]))
         }*/
       })
     }

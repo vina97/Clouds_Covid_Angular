@@ -8,8 +8,9 @@ import { formatDate } from '@angular/common';
 //TODO: refactor code for subscription, 
 //TODO: login in other way
 //TODO: make all feel like loading when still no data
-//TODO: User icon + logout
-//TODO: table as different component
+//TODO: User icon when logged
+//TODO: add icons to make clear the sorting
+
 
 //TODO: today data in last 7
 

@@ -5,4 +5,5 @@ export interface News {
     author: string,
     country: string,
     date: string,
+    id: string,
 }

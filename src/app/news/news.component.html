@@ -11,12 +11,19 @@
 
         </div>
     </div>
-    <button class="btn btn-success my-2 my-sm-0" type="button" (click)="covidService.signInWithGoogle()">login</button>
+    <button class="btn btn-success my-2 my-sm-0" type="button" (click)="covidService.signInWithGoogle()"
+        *ngIf="covidService.getUser().name ==''">login</button>
+    <button class="btn btn-danger my-2 my-sm-0" type="button" (click)="covidService.signOut()"
+        *ngIf="covidService.getUser().name !=''">log-out</button>
+
 </nav>
 
 <div class="text-center">
     <!-- Button trigger modal -->
-    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModalCenter">
+    <button class="btn btn-success my-2 my-sm-0" type="button" (click)="covidService.signInWithGoogle()"
+        *ngIf="covidService.getUser().name ==''">login to post</button>
+    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModalCenter"
+        *ngIf="covidService.getUser().name !=''">
         Add News
     </button>
 
@@ -57,6 +64,67 @@
     </div>
 </div>
 
+<div class="text-center" *ngIf="news.length == 0">
+    No News to display!!
+</div>
+
+
+<div class="container text-center my-3">
+    <div class="row mx-auto my-auto">
+        <div id="recipeCarousel" class="carousel slide w-100" data-ride="carousel">
+            <div class="carousel-inner w-100" role="listbox">
+                <div class="carousel-item active">
+                    <div class=" col-md-4">
+                        <div class="card card-body">
+                            <img class="img-fluid" src="http://placehold.it/380?text=2">
+                        </div>
+                    </div>
+                </div>
+                <div class="carousel-item" *ngFor="let n of news">
+                    <div class=" col-md-4">
+                        <div class="card">
+                            <div class="card-header">
+                                <h5 class="card-title">{{n.title}}
+                                    <p class="card-text"><small class="text-muted">{{n.country}}, {{n.date}}</small></p>
+                                </h5>
+                                <p class="card-text"><small class="text-muted">{{n.author}}</small></p>
+                            </div>
+                            <img class="card-img-top border" src={{n.image}} alt="Card image cap" height="200px">
+                            <div class="card-body">
+                                <p class="card-text">{{n.text}}</p>
+                            </div>
+                            <div class="card-footer">
+                                <button class="btn btn-info my-2 my-sm-0">
+                                    Read News</button>
+                                <button class="btn btn-info my-2 my-sm-0" (click)="covidService.goToCountry(n.country)"
+                                    *ngIf="n.country=='WorldWide' "> Go to Summary
+                                    page</button>
+                                <button class="btn btn-info my-2 my-sm-0" (click)="covidService.goToCountry(n.country)"
+                                    *ngIf="n.country!='WorldWide' "> Go to Country
+                                    page</button>
+                                <button class="btn btn-danger my-2 my-sm-0"
+                                    *ngIf="n.author == covidService.getUser().name"
+                                    (click)="covidService.removeNews(n)"> Delete</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <a class="carousel-control-prev w-auto" href="#recipeCarousel" role="button" data-slide="prev">
+                <span class="carousel-control-prev-icon bg-dark border border-dark rounded-circle"
+                    aria-hidden="true"></span>
+                <span class="sr-only">Previous</span>
+            </a>
+            <a class="carousel-control-next w-auto" href="#recipeCarousel" role="button" data-slide="next">
+                <span class="carousel-control-next-icon bg-dark border border-dark rounded-circle"
+                    aria-hidden="true"></span>
+                <span class="sr-only">Next</span>
+            </a>
+        </div>
+    </div>
+</div>
+
+
 <div class="card border-dark mb-3" *ngFor="let n of news">
 
     <div class="card-header">
@@ -67,14 +135,18 @@
     </div>
     <img class="card-img-top border" src={{n.image}} alt="Card image cap" height="200px">
     <div class="card-body">
-        <p class="card-text">{{n.text}}</p>
+        <p class="card-text">{{n.text}} </p>
     </div>
     <div class="card-footer">
+        <button class="btn btn-info my-2 my-sm-0">
+            Read News</button>
         <button class="btn btn-info my-2 my-sm-0" (click)="covidService.goToCountry(n.country)"
             *ngIf="n.country=='WorldWide' "> Go to Summary
             page</button>
         <button class="btn btn-info my-2 my-sm-0" (click)="covidService.goToCountry(n.country)"
             *ngIf="n.country!='WorldWide' "> Go to Country
             page</button>
+        <button class="btn btn-danger my-2 my-sm-0" *ngIf="n.author == covidService.getUser().name"
+            (click)="removeNews(n)"> Delete</button>
     </div>
 </div>

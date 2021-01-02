@@ -17,7 +17,10 @@
 
         </div>
     </div>
-    <button class="btn btn-success my-2 my-sm-0" type="button" (click)="covidService.signInWithGoogle()">login</button>
+    <button class="btn btn-success my-2 my-sm-0" type="button" (click)="covidService.signInWithGoogle()"
+        *ngIf="covidService.getUser().name ==''">login</button>
+    <button class="btn btn-danger my-2 my-sm-0" type="button" (click)="covidService.signOut()"
+        *ngIf="covidService.getUser().name !=''">log-out</button>
     <button class="btn btn-info my-2 my-sm-0" type="button" (click)="covidService.news()">News</button>
 </nav>
 

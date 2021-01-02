@@ -25,6 +25,8 @@ export class CovidService {
   public countries = []
   private cnews = "WorldWide"
 
+  public byCountry: Info[]
+
   private covid_API = 'https://api.covid19api.com/';  // URL to web api
   constructor(private http: HttpClient, private afAuth: AngularFireAuth,
     private router: Router, private firestore: AngularFirestore) { }
@@ -151,7 +153,18 @@ export class CovidService {
     if (this.user == null && JSON.parse(localStorage.getItem("User")) !== null) {
       this.user = JSON.parse(localStorage.getItem("User"))
     }
-    return this.user
+    if (this.user != undefined) {
+      let result = this.user
+      return result
+    }
+    else {
+      let result = {
+        uid: "",
+        name: "",
+        email: ""
+      }
+      return result
+    }
   }
 
   public signOut() {
@@ -171,13 +184,13 @@ export class CovidService {
   public addNews(n) {
 
     this.ncomm++
-
-    this.firestore.collection("AllNews").doc(this.ncomm.toString()).set(
+    n.id = this.ncomm.toString()
+    this.firestore.collection("AllNews").doc(n.id).set(
       n, { merge: true }
     )
 
     if (n.country != "WorldWide") {
-      this.firestore.collection("Countries").doc(n.country).collection("News").doc(this.ncomm.toString()).set(
+      this.firestore.collection("Countries").doc(n.country).collection("News").doc(n.id).set(
         n, { merge: true }
       )
 
@@ -202,6 +215,15 @@ export class CovidService {
     }
     else
       return this.getNews()
+  }
+
+  public removeNews(n) {
+    this.firestore.collection("AllNews").doc(n.id).delete()
+
+    if (n.country != "WorldWide") {
+      this.firestore.collection("Countries").doc(n.country).collection("News").doc(n.id).delete()
+
+    }
   }
 
 }
