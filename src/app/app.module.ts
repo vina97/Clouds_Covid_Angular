@@ -21,6 +21,7 @@ import { CountryTableComponent } from './country-table/country-table.component';
 import { PieChartComponent } from './pie-chart/pie-chart.component';
 import { BarChartComponent } from './bar-chart/bar-chart.component';
 import { LineChartComponent } from './line-chart/line-chart.component';
+import { NewspageComponent } from './newspage/newspage.component';
 
 
 @NgModule({
@@ -32,7 +33,8 @@ import { LineChartComponent } from './line-chart/line-chart.component';
     CountryTableComponent,
     PieChartComponent,
     BarChartComponent,
-    LineChartComponent
+    LineChartComponent,
+    NewspageComponent
   ],
   imports: [
     BrowserModule,
