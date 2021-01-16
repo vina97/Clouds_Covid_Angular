@@ -1,6 +1,12 @@
 <div id="last7">
-    <h3>Daily Corona virus cases {{country}}</h3>
-    <canvas baseChart [datasets]="barChartData" [labels]="barChartLabels" [options]="barChartOptions"
-        [legend]="barChartLegend" [chartType]="barChartType">
+    <h3>Daily Corona virus cases {{covidService.current}}</h3>
+    <div class="text-center" *ngIf="!covidService.dataReady">
+        Fetching Data...
+        <div class="spinner-border" role="status">
+            <span class="sr-only">Loading...</span>
+        </div>
+    </div>
+    <canvas *ngIf="covidService.dataReady" baseChart [datasets]="barChartData" [labels]="barChartLabels"
+        [options]="barChartOptions" [legend]="barChartLegend" [chartType]="barChartType">
     </canvas>
 </div>

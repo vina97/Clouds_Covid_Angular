@@ -8,8 +8,12 @@ import { formatDate } from '@angular/common';
 //TODO: refactor code for subscription, 
 //TODO: login in other way
 //TODO: make all feel like loading when still no data
-//TODO: User icon when logged
-//TODO: add icons to make clear the sorting
+//TODO: User icon when logged -> set with CSS
+
+//TODO: proper page scroll (check offset/ evaluate nav global)
+//TODO: fix CSS size of graphs
+
+//TODO: all data in service, components only get from there
 
 
 //TODO: today data in last 7
@@ -22,24 +26,12 @@ import { formatDate } from '@angular/common';
 })
 export class HomepageComponent implements OnInit {
 
-  public byCountry: Info[];
 
 
   constructor(public covidService: CovidService) { }
 
   ngOnInit(): void {
-    this.covidService.getCountries()
-
-    this.covidService.getSummary().toPromise().then(data => {
-
-      this.byCountry = new Array<Info>();
-      for (let i = 0; i < data["Countries"].length; i++) {
-        let elem = data["Countries"][i]
-        this.byCountry.push(new Info(elem["Country"], elem["TotalConfirmed"], elem["NewConfirmed"], elem["TotalRecovered"], elem["NewRecovered"], elem["TotalDeaths"], elem["NewDeaths"]))
-      }
-    })
-
-
+    this.covidService.setAllInfoHomePage()
   }
 
 

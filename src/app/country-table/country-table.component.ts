@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { CovidService } from '../covid.service';
 import { Info } from '../info.model';
 
-//TODO
+//TODO: CSS to fix size
 
 @Component({
   selector: 'app-country-table',

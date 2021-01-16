@@ -1,5 +1,11 @@
 <h3>Corona virus by country</h3>
-<table class="table table-bordered" id="countries">
+<div class="text-center" *ngIf="!covidService.dataReady">
+    Fetching Data...
+    <div class="spinner-border" role="status">
+        <span class="sr-only">Loading...</span>
+    </div>
+</div>
+<table *ngIf="covidService.dataReady" class="table table-bordered" id="countries">
     <thead>
         <th (click)="countrySort()">Country<br>
             <i class="fa fa-arrow-up highlight" id="countryUp"></i>

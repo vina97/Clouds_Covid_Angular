@@ -1,50 +1,103 @@
 <div id="summary">
-    <h3>Corona virus Summary {{country}}</h3>
+    <h3>Corona virus Summary {{covidService.current}}</h3>
     <table class="table table-bordered">
         <tbody>
             <tr class="table-warning">
                 <td>Total cases</td>
-                <td>{{numberWithCommas(total.totalCases)}}</td>
+                <td *ngIf="!covidService.dataReady"> Fetching Data...
+                    <div class="spinner-border" role="status">
+                        <span class="sr-only">Loading...</span>
+                    </div>
+                </td>
+                <td *ngIf="covidService.dataReady">{{numberWithCommas(covidService.summary.totalCases )}}</td>
             </tr>
             <tr class="table-warning">
                 <td>New cases</td>
-                <td>{{numberWithCommas(total.newCases)}}</td>
+                <td *ngIf="!covidService.dataReady"> Fetching Data...
+                    <div class="spinner-border" role="status">
+                        <span class="sr-only">Loading...</span>
+                    </div>
+                </td>
+                <td *ngIf="covidService.dataReady">{{numberWithCommas(covidService.summary.newCases)}}</td>
             </tr>
             <tr class="table-warning">
                 <td>Active cases</td>
-                <td>{{numberWithCommas(total.activeCases)}}</td>
+                <td *ngIf="!covidService.dataReady"> Fetching Data...
+                    <div class="spinner-border" role="status">
+                        <span class="sr-only">Loading...</span>
+                    </div>
+                </td>
+                <td *ngIf="covidService.dataReady">{{numberWithCommas(covidService.summary.activeCases)}}</td>
             </tr>
             <tr class="table-info">
                 <td>Total Recovered</td>
-                <td>{{numberWithCommas(total.totalRecovery)}}</td>
+                <td *ngIf="!covidService.dataReady"> Fetching Data...
+                    <div class="spinner-border" role="status">
+                        <span class="sr-only">Loading...</span>
+                    </div>
+                </td>
+                <td *ngIf="covidService.dataReady">{{numberWithCommas(covidService.summary.totalRecovery)}}</td>
             </tr>
             <tr class="table-info">
                 <td>New Recovered</td>
-                <td>{{numberWithCommas(total.newRecovery)}}</td>
+                <td *ngIf="!covidService.dataReady"> Fetching Data...
+                    <div class="spinner-border" role="status">
+                        <span class="sr-only">Loading...</span>
+                    </div>
+                </td>
+                <td *ngIf="covidService.dataReady">{{numberWithCommas(covidService.summary.newRecovery)}}</td>
             </tr>
             <tr class="table-info">
                 <td>Recovery rate</td>
-                <td>{{total.recoveryRate.toString() }}%</td>
+                <td *ngIf="!covidService.dataReady"> Fetching Data...
+                    <div class="spinner-border" role="status">
+                        <span class="sr-only">Loading...</span>
+                    </div>
+                </td>
+                <td *ngIf="covidService.dataReady">{{covidService.summary.recoveryRate.toString() }}%</td>
             </tr>
             <tr class="table-danger">
                 <td>Total Deaths</td>
-                <td>{{numberWithCommas(total.totalDeath)}}</td>
+                <td *ngIf="!covidService.dataReady"> Fetching Data...
+                    <div class="spinner-border" role="status">
+                        <span class="sr-only">Loading...</span>
+                    </div>
+                </td>
+                <td *ngIf="covidService.dataReady">{{numberWithCommas(covidService.summary.totalDeath)}}</td>
             </tr>
             <tr class="table-danger">
                 <td>New Deaths</td>
-                <td>{{numberWithCommas(total.newDeath)}}</td>
+                <td *ngIf="!covidService.dataReady"> Fetching Data...
+                    <div class="spinner-border" role="status">
+                        <span class="sr-only">Loading...</span>
+                    </div>
+                </td>
+                <td *ngIf="covidService.dataReady">{{numberWithCommas(covidService.summary.newDeath)}}</td>
             </tr>
             <tr class="table-danger">
                 <td>Mortality rate </td>
-                <td>{{total.mortalityRate.toString() }}%</td>
+                <td *ngIf="!covidService.dataReady"> Fetching Data...
+                    <div class="spinner-border" role="status">
+                        <span class="sr-only">Loading...</span>
+                    </div>
+                </td>
+                <td *ngIf="covidService.dataReady">{{covidService.summary.mortalityRate.toString() }}%</td>
             </tr>
         </tbody>
     </table>
 </div>
 
 <div class="chart" id="distribution">
-    <h3>Corona virus cases distribution {{country}}</h3>
-    <canvas baseChart [data]="pieChartData" [labels]="pieChartLabels" [chartType]="pieChartType"
-        [options]="pieChartOptions" [colors]="pieChartColors" [legend]="pieChartLegend">
+    <h3>Corona virus cases distribution {{covidService.current}}</h3>
+    <div class="text-center" *ngIf="!covidService.dataReady">
+        Fetching Data...
+        <div class="spinner-border" role="status">
+            <span class="sr-only">Loading...</span>
+        </div>
+    </div>
+    <canvas *ngIf="covidService.dataReady" baseChart
+        [data]="[covidService.summary.totalDeath, covidService.summary.totalRecovery, covidService.summary.activeCases]"
+        [labels]="pieChartLabels" [chartType]="pieChartType" [options]="pieChartOptions" [colors]="pieChartColors"
+        [legend]="pieChartLegend">
     </canvas>
 </div>

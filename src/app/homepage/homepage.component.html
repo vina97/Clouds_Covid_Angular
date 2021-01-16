@@ -1,4 +1,4 @@
-<nav class="navbar navbar-dark bg-dark">
+<nav class="navbar navbar-dark bg-dark fixed-top">
     <a class="navbar-brand"> Covid-19</a>
     <a href="home#summary">summary</a>
     <a href="home#distribution">distribution</a>
@@ -8,24 +8,26 @@
 
 
 
-    <div class="nav-item dropdown">
+    <div class="nav-item dropdown ">
         <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button" data-toggle="dropdown"
             aria-haspopup="true" aria-expanded="false">
             Select Country
         </a>
         <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
-            <a class="dropdown-item" [routerLink]="['/country', c.name]" *ngFor="let c of byCountry">{{c.name}}</a>
+            <a class="dropdown-item" [routerLink]="['/country', c]" *ngFor="let c of covidService.countries">{{c}}</a>
 
         </div>
     </div>
     <button class="btn btn-success my-2 my-sm-0" type="button" (click)="covidService.signInWithGoogle()"
         *ngIf="covidService.getUser().name ==''">login</button>
-    <button class="btn btn-danger my-2 my-sm-0" type="button" (click)="covidService.signOut()"
-        *ngIf="covidService.getUser().name !=''">log-out</button>
+    <div *ngIf="covidService.getUser().name !=''">
+        <img [src]='covidService.getUser().img'>
+        <button class="btn btn-danger my-2 my-sm-0" type="button" (click)="covidService.signOut()">log-out</button>
+    </div>
     <button class="btn btn-info my-2 my-sm-0" type="button" (click)="covidService.news()">News</button>
 </nav>
 
-<div class="text-center">
+<div class="text-center mx-5 mt-5 pt-3">
     <img src="https://firebasestorage.googleapis.com/v0/b/covid-project-eurecom.appspot.com/o/covid19_icon.png?alt=media&token=758be0c7-a52f-486e-aec2-05882964bbc1"
         alt="covid logo" width="40" height="40">
     <h1 span>Covid-19</h1>

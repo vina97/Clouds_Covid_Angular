@@ -5,6 +5,9 @@ import { ChartType, ChartOptions, ChartDataSets } from 'chart.js';
 import { Color, Label } from 'ng2-charts';
 import { formatDate } from '@angular/common';
 import { ActivatedRoute } from '@angular/router';
+import { News } from '../news.model';
+
+//TODO: summary retrival for country page
 
 @Component({
   selector: 'app-pie-chart',
@@ -47,26 +50,29 @@ export class PieChartComponent implements OnInit {
     let page = this.route.snapshot["url"][0]["path"]
     if (page == "home") {
       this.country = "WorldWide"
-      this.covidService.getSummary().toPromise().then(data => {
-        this.total = new Info("Global", data["Global"]["TotalConfirmed"], data["Global"]["NewConfirmed"], data["Global"]["TotalRecovered"], data["Global"]["NewRecovered"], data["Global"]["TotalDeaths"], data["Global"]["NewDeaths"])
-        this.pieChartLabels = ['Dead Cases', 'Recovered Cases', 'Active cases'];
-        this.pieChartData = [this.total.totalDeath, this.total.totalRecovery, this.total.activeCases]
-        //this.pieChartData.push(this.total.totalRecovery)
-        //this.pieChartData.push(this.total.totalDeath)
-        /*
-        this.covidService.byCountry = new Array<Info>();
-        for (let i = 0; i < data["Countries"].length; i++) {
-          let elem = data["Countries"][i]
-          this.covidService.byCountry.push(new Info(elem["Country"], elem["TotalConfirmed"], elem["NewConfirmed"], elem["TotalRecovered"], elem["NewRecovered"], elem["TotalDeaths"], elem["NewDeaths"]))
-        }*/
-      })
+      this.pieChartLabels = ['Dead Cases', 'Recovered Cases', 'Active cases'];
     }
+
     else if (page == "country") {
+      /*
       this.country = this.route.snapshot.paramMap.get('name')
-        ; (await this.covidService.getCountryInfoDB(this.country)).subscribe((res) => {
-          this.total = new Info(res.data()["name"], res.data()["totalCases"], res.data()["newCases"], res.data()["totalRecovery"], res.data()["newRecovery"], res.data()["totalDeath"], res.data()["newDeath"])
+      this.covidService.getCountryInfoAPI(this.country);
+
+      this.covidService.getCountryInfoDB(this.country).subscribe((doc: Info) => {
+        let last: Date;
+        let now = new Date();
+        last = doc["lastUpdate"].toDate();
+
+        if (last.getFullYear() === now.getFullYear() &&
+          last.getMonth() === now.getMonth() &&
+          last.getDate() === now.getDate()) {
+          this.total = new Info(doc["name"], doc["totalCases"], doc["newCases"], doc["totalRecovery"], doc["newRecovery"], doc["totalDeath"], doc["newDeath"])
           this.pieChartData = [this.total.totalDeath, this.total.totalRecovery, this.total.totalCases]
-        })
+        }
+      })
+*/
+
+
     }
 
   }

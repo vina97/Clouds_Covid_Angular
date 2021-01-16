@@ -7,13 +7,7 @@ import { CovidService } from '../covid.service';
 import { formatDate } from '@angular/common';
 
 //TODO: fix first add problem -> split in 2 functions: check (and add if not), retrieve-> less comlicated that now
-//TODO: last week data as deltas
-//TODO: country change imply recompute graphs
-
-//TODO: today data in last 7
-
-//possibility: store in covidservice current country/worldwide for titles/filtering
-
+//TODO: summary retrival fix
 
 @Component({
   selector: 'app-country',
@@ -21,9 +15,6 @@ import { formatDate } from '@angular/common';
   styleUrls: ['./country.component.css']
 })
 export class CountryComponent implements OnInit {
-  country: string;
-
-
 
 
   constructor(private route: ActivatedRoute, public covidService: CovidService) { }
@@ -31,7 +22,6 @@ export class CountryComponent implements OnInit {
 
 
   async ngOnInit(): Promise<void> {
-    this.covidService.getCountries()
-    this.country = this.route.snapshot.paramMap.get('name')
+    this.covidService.setAllInfoCountry(this.route.snapshot.paramMap.get('name'))
   }
 }

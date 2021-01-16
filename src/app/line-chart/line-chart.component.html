@@ -1,6 +1,15 @@
-<h3>Total Corona Virus cases {{country}}</h3>
+<h3>Total Corona Virus cases {{covidService.current}}</h3>
 <div style="display: block;" id="April">
-    <canvas baseChart width="400" height="400" [datasets]="lineChartData" [labels]="lineChartLabels"
-        [options]="lineChartOptions" [legend]="lineChartLegend" [chartType]="lineChartType">
+
+
+
+    <div class="text-center" *ngIf="!covidService.dataReady">
+        Fetching Data...
+        <div class="spinner-border" role="status">
+            <span class="sr-only">Loading...</span>
+        </div>
+    </div>
+    <canvas *ngIf="covidService.dataReady" baseChart width="400" height="400" [datasets]="lineChartData"
+        [labels]="lineChartLabels" [options]="lineChartOptions" [legend]="lineChartLegend" [chartType]="lineChartType">
     </canvas>
 </div>

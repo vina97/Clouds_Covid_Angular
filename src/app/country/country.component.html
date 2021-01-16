@@ -1,4 +1,4 @@
-<nav class="navbar navbar-dark bg-dark">
+<nav class="navbar navbar-dark bg-dark fixed-top">
     <a class="navbar-brand" [routerLink]="['/country']"> Covid-19</a>
     <a href="home#summary">summary</a>
     <a href="home#distribution">distribution</a>
@@ -13,7 +13,8 @@
             Change country
         </a>
         <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
-            <a class="dropdown-item" [routerLink]="['/country', c]" *ngFor="let c of covidService.countries">{{c}}</a>
+            <a class="dropdown-item" (click)="covidService.goToCountry(c)"
+                *ngFor="let c of covidService.countries">{{c}}</a>
 
         </div>
     </div>
@@ -24,10 +25,10 @@
     <button class="btn btn-info my-2 my-sm-0" type="button" (click)="covidService.news()">News</button>
 </nav>
 
-<div class="text-center">
+<div class="text-center mx-5 mt-5 pt-3">
     <img src="https://firebasestorage.googleapis.com/v0/b/covid-project-eurecom.appspot.com/o/covid19_icon.png?alt=media&token=758be0c7-a52f-486e-aec2-05882964bbc1"
         alt="covid logo" width="40" height="40">
-    <h1 span>Covid-19-{{country}}</h1>
+    <h1 span>Covid-19-{{covidService.current}}</h1>
     <p>Live updates and news</p>
 
     <div>
