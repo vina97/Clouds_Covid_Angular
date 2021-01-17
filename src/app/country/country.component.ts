@@ -6,8 +6,7 @@ import { Color, Label } from 'ng2-charts';
 import { CovidService } from '../covid.service';
 import { formatDate } from '@angular/common';
 
-//TODO: fix first add problem -> split in 2 functions: check (and add if not), retrieve-> less comlicated that now
-//TODO: summary retrival fix
+
 
 @Component({
   selector: 'app-country',

@@ -73,13 +73,13 @@ export class CovidService {
   setAllInfoHomePage() {
     this.dataReady = false
     this.dataSummaryReady = false
-    this.dayslabels[this.totalRec.length] = []
-    this.newConf[this.newConf.length] = []
-    this.newDeath[this.newDeath.length] = []
-    this.newRec[this.newRec.length] = []
-    this.totalConf[this.totalConf.length] = []
-    this.totalDeath[this.totalDeath.length] = []
-    this.totalRec[this.totalRec.length] = []
+    this.dayslabels = []
+    this.newConf = []
+    this.newDeath = []
+    this.newRec = []
+    this.totalConf = []
+    this.totalDeath = []
+    this.totalRec = []
     console.log("taking data")
     this.getSummary().subscribe(data => {
       this.summary = new Info("Global", data["Global"]["TotalConfirmed"], data["Global"]["NewConfirmed"], data["Global"]["TotalRecovered"], data["Global"]["NewRecovered"], data["Global"]["TotalDeaths"], data["Global"]["NewDeaths"])
@@ -140,18 +140,46 @@ export class CovidService {
   setAllInfoCountry(c: string) {
     this.getCountries()
     this.current = c
-    this.dataReady = true
+    this.dataReady = false
     this.dataSummaryReady = false
-    this.dayslabels[this.totalRec.length] = []
-    this.newConf[this.newConf.length] = []
-    this.newDeath[this.newDeath.length] = []
-    this.newRec[this.newRec.length] = []
-    this.totalConf[this.totalConf.length] = []
-    this.totalDeath[this.totalDeath.length] = []
-    this.totalRec[this.totalRec.length] = []
-    //getCountryInfo and check or update
-    this.dataSummaryReady = true
-    this.getAllFromCountry(c).subscribe(d => {
+    this.dayslabels = []
+    this.newConf = []
+    this.newDeath = []
+    this.newRec = []
+    this.totalConf = []
+    this.totalDeath = []
+    this.totalRec = []
+
+    this.getCountryInfoAPI(c)
+
+  }
+
+  getSummary() {
+    let options: { responseType?: "json" }
+    return this.http.get(this.covid_API + "summary", options)
+  }
+
+  getCountries() {
+    if (this.countries.length > 0)
+      return;
+    this.http.get(this.covid_API + "summary").subscribe((res) => {
+      for (let el in res["Countries"]) {
+
+        this.countries.push(res["Countries"][el]["Country"])
+      }
+    })
+  }
+
+  getFromApril() {
+    let now = formatDate(new Date(), 'yyyy-MM-dd', 'en');
+    let from = "2020-04-13"
+    let options: { responseType?: "json" }
+    return this.http.get(this.covid_API + "world?from=" + from + "&to=" + now, options)
+  }
+
+  getAllFromCountry(country_name: string) {
+    let options: { responseType?: "json" }
+    this.http.get(this.covid_API + "dayone/country/" + country_name, options).subscribe(d => {
       console.log(d)
       let sortable = []
       for (let elem in d) {
@@ -195,51 +223,6 @@ export class CovidService {
     })
   }
 
-  getSummary() {
-    let options: { responseType?: "json" }
-    return this.http.get(this.covid_API + "summary", options)
-  }
-
-  getCountries() {
-    if (this.countries.length > 0)
-      return;
-    this.http.get(this.covid_API + "summary").subscribe((res) => {
-      for (let el in res["Countries"]) {
-
-        this.countries.push(res["Countries"][el]["Country"])
-      }
-    })
-  }
-
-  getFromApril() {
-    let now = formatDate(new Date(), 'yyyy-MM-dd', 'en');
-    let from = "2020-04-13"
-    let options: { responseType?: "json" }
-    return this.http.get(this.covid_API + "world?from=" + from + "&to=" + now, options)
-  }
-
-  public async updateCountryInfo(country: Info) {
-    this.firestore.collection("Countries").doc(country.name).set({
-      name: country.name,
-      totalCases: country.totalCases,
-      newCases: country.newCases,
-      totalRecovery: country.totalRecovery,
-      newRecovery: country.newRecovery,
-      totalDeath: country.totalDeath,
-      newDeath: country.newDeath,
-      activeCases: country.activeCases,
-      recoveryRate: country.recoveryRate,
-      mortalityRate: country.mortalityRate,
-      lastUpdate: new Date()
-    }, { merge: true })
-    console.log("asfai")
-  }
-
-  getAllFromCountry(country_name: string) {
-    let options: { responseType?: "json" }
-    return this.http.get(this.covid_API + "dayone/country/" + country_name, options)
-  }
-
   getCountryInfoAPI(country_name: string) {
     let index = this.countries.indexOf(country_name)
     this.firestore.collection("Countries").doc(country_name).get().subscribe((doc) => {
@@ -252,6 +235,10 @@ export class CovidService {
           last.getMonth() === now.getMonth() &&
           last.getDate() === now.getDate()) {
           console.log("no update")
+          this.summary = new Info(doc.data()["name"], doc.data()["totalCases"], doc.data()["newCases"], doc.data()["totalRecovery"], doc.data()["newRecovery"], doc.data()["totalDeath"], doc.data()["newDeath"])
+          console.log(this.summary)
+          this.dataSummaryReady = true
+          this.getAllFromCountry(country_name)
           return
         }
       }
@@ -260,6 +247,8 @@ export class CovidService {
       this.getSummary().subscribe(data => {
         let elem = data["Countries"][index]
         let c = new Info(elem["Country"], elem["TotalConfirmed"], elem["NewConfirmed"], elem["TotalRecovered"], elem["NewRecovered"], elem["TotalDeaths"], elem["NewDeaths"])
+        this.summary = c
+        this.dataSummaryReady = true
         this.firestore.collection("Countries").doc(c.name).set({
           name: c.name,
           totalCases: c.totalCases,
@@ -273,15 +262,10 @@ export class CovidService {
           mortalityRate: c.mortalityRate,
           lastUpdate: new Date()
         }, { merge: true })
+        this.getAllFromCountry(country_name)
       }
       )
     })
-  }
-
-
-  public getCountryInfoDB(country_name: string) {
-    return this.firestore.collection("Countries").doc(country_name).valueChanges()
-
   }
 
   public async signInWithGoogle() {
@@ -400,10 +384,13 @@ export class CovidService {
       this.router.navigate(['./country/' + cname])
     }
     else {
+      this.current = cname
       this.router.navigate(['./summary/'])
     }
 
   }
+
+
 
   public filterNews(country) {
     this.current = country

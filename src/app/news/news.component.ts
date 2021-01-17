@@ -9,15 +9,16 @@ import { AngularFireStorage } from '@angular/fire/storage';
 //TODO: add news as ngModel + ngSubmit + reset to undefined
 //TODO: handle news edit -> video
 //TODO: news indexing + id -> almost
-//TODO: filter by country, done, but show properly 
-//TODO: think to other way for news ids -> timestamp + uid
 //TODO: properly fix CSS modal
 //TODO: show upload file progress
+//TODO: news ID more unique
+
+//*
+//TODO: filter by country, done, but show properly 
+//TODO: think to other way for news ids -> timestamp + uid
 //TODO: update news when inserting one with image 
-//TODO: page to show news selected -> evaluate add comments
-
-
 //TODO: news array in covid servece, evaluate logic move
+//*
 
 //TODO: author icon too in the news
 

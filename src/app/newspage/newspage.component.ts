@@ -4,6 +4,10 @@ import { CovidService } from '../covid.service';
 
 //TODO: (if time) -> comment section
 
+//*
+//TODO: (if reasonable) -> <- previous | goToCountry | next ->  => move this logic too in service (news array)
+//*
+
 @Component({
   selector: 'app-newspage',
   templateUrl: './newspage.component.html',

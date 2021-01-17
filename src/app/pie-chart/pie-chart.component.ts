@@ -7,7 +7,9 @@ import { formatDate } from '@angular/common';
 import { ActivatedRoute } from '@angular/router';
 import { News } from '../news.model';
 
+//*
 //TODO: summary retrival for country page
+//*
 
 @Component({
   selector: 'app-pie-chart',
@@ -54,24 +56,8 @@ export class PieChartComponent implements OnInit {
     }
 
     else if (page == "country") {
-      /*
       this.country = this.route.snapshot.paramMap.get('name')
-      this.covidService.getCountryInfoAPI(this.country);
-
-      this.covidService.getCountryInfoDB(this.country).subscribe((doc: Info) => {
-        let last: Date;
-        let now = new Date();
-        last = doc["lastUpdate"].toDate();
-
-        if (last.getFullYear() === now.getFullYear() &&
-          last.getMonth() === now.getMonth() &&
-          last.getDate() === now.getDate()) {
-          this.total = new Info(doc["name"], doc["totalCases"], doc["newCases"], doc["totalRecovery"], doc["newRecovery"], doc["totalDeath"], doc["newDeath"])
-          this.pieChartData = [this.total.totalDeath, this.total.totalRecovery, this.total.totalCases]
-        }
-      })
-*/
-
+      this.pieChartLabels = ['Dead Cases', 'Recovered Cases', 'Active cases'];
 
     }
 
