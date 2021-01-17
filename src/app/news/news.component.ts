@@ -11,15 +11,10 @@ import { AngularFireStorage } from '@angular/fire/storage';
 //TODO: news indexing + id -> almost
 //TODO: properly fix CSS modal
 //TODO: show upload file progress
-//TODO: news ID more unique
+//TODO: Proper message when no news
 
+//TODO: scroll up page when changing
 
-//*
-//TODO: filter by country, done, but show properly 
-//TODO: think to other way for news ids -> timestamp + uid
-//TODO: update news when inserting one with image 
-//TODO: news array in covid servece, evaluate logic move
-//*
 
 //TODO: author icon too in the news
 

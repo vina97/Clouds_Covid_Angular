@@ -350,8 +350,7 @@ export class CovidService {
 
 
   public addNews(n: News) {
-    this.ncomm++
-    n.id = this.ncomm.toString()
+    n.id = Math.random().toString(36).slice(2) + n.uid
     this.firestore.collection("AllNews").doc(n.id).set(
       n, { merge: true }
     )
@@ -412,7 +411,6 @@ export class CovidService {
       this.firestore.collection("Countries").doc(country).collection("News").get().subscribe((snapshot) => {
         snapshot.forEach(doc => {
           if (doc.exists) {
-            this.ncomm++;
             this.allNews.push({
               image: doc.data()["image"],
               title: doc.data()["title"],
@@ -425,18 +423,16 @@ export class CovidService {
               id: doc.data()["id"],
             })
             this.allNews.reverse()
-            this.newsReady = true
             console.log(this.allNews)
-
           }
         })
+        this.newsReady = true
       })
     }
     else {
       this.getNews().subscribe((snapshot) => {
         snapshot.forEach(doc => {
           if (doc.exists) {
-            this.ncomm++;
             this.allNews.push({
               image: doc.data()["image"],
               title: doc.data()["title"],
@@ -449,12 +445,10 @@ export class CovidService {
               uid: doc.data()["uid"]
             })
             this.allNews.reverse()
-            this.newsReady = true
             console.log(this.allNews)
-
-
           }
         })
+        this.newsReady = true
       })
     }
   }
@@ -482,6 +476,9 @@ export class CovidService {
 
 
   public setCurrentNews(id) {
+    if (this.allNews == undefined) {
+      this.filterNews(this.current)
+    }
     this.firestore.collection("AllNews").doc(id).get().subscribe((doc) => {
       if (doc.exists) {
         console.log(doc)
@@ -502,6 +499,17 @@ export class CovidService {
       }
     })
 
+  }
+
+  public loadNews(i) {
+    let index = this.allNews.indexOf(this.newsDetail)
+    let newindex = index + i
+    if (newindex < 0)
+      this.newsDetail = this.allNews[this.allNews.length - 1]
+    else if (newindex == this.allNews.length)
+      this.newsDetail = this.allNews[0]
+    else
+      this.newsDetail = this.allNews[newindex]
   }
 
 }

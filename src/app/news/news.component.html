@@ -7,6 +7,7 @@
             Filter by Country
         </a>
         <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+            <a class="dropdown-item" (click)="covidService.filterNews('WorldWide')">WorldWide</a>
             <a class="dropdown-item" *ngFor="let c of covidService.countries"
                 (click)="covidService.filterNews(c)">{{c}}</a>
 
@@ -82,7 +83,8 @@
 
 
 <div class="row">
-    <div class="card border-dark mb-3 col-3 ml-3" *ngFor="let n of covidService.allNews">
+    <div class="card border-dark mb-3 col-3 ml-3" *ngFor="let n of covidService.allNews"
+        (click)="covidService.goToNews(n)">
 
         <div class="card-header">
             <h5 class="card-title">{{n.title}}
