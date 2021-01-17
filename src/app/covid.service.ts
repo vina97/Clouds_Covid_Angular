@@ -37,6 +37,7 @@ export class CovidService {
 
   public dataSummaryReady = false
   public dataReady = false
+  public newsReady = false
 
 
 
@@ -50,6 +51,8 @@ export class CovidService {
   public newConf = []
   public newRec = []
 
+
+
   public newsDetail: News = {
     image: "",
     title: "",
@@ -61,6 +64,8 @@ export class CovidService {
     date: "",
     id: "",
   }
+
+  public allNews: Array<News>
 
 
 
@@ -357,6 +362,7 @@ export class CovidService {
       )
 
     }
+    this.allNews.push(n)
     //let modal = document.getElementById("exampleModalCenter")
   }
 
@@ -367,14 +373,20 @@ export class CovidService {
     this.afStorage.ref("").child(f).delete();
     this.firestore.collection("AllNews").doc(n.id).set(
       n, { merge: true }
+    ).then(() => {
+      if (n.country != "WorldWide") {
+        this.firestore.collection("Countries").doc(n.country).collection("News").doc(n.id).set(
+          n, { merge: true }
+        )
+
+      }
+    }).then(() => {
+      let index = this.allNews.indexOf(n)
+      this.allNews[index].image = "https://firebasestorage.googleapis.com/v0/b/covid-project-eurecom.appspot.com/o/covid19_icon.png?alt=media&token=758be0c7-a52f-486e-aec2-05882964bbc1";
+    }
     )
 
-    if (n.country != "WorldWide") {
-      this.firestore.collection("Countries").doc(n.country).collection("News").doc(n.id).set(
-        n, { merge: true }
-      )
 
-    }
   }
 
   public goToCountry(cname) {
@@ -393,21 +405,73 @@ export class CovidService {
 
 
   public filterNews(country) {
+    this.newsReady = false
     this.current = country
+    this.allNews = []
     if (country != "WorldWide") {
-      return this.firestore.collection("Countries").doc(country).collection("News").get()
+      this.firestore.collection("Countries").doc(country).collection("News").get().subscribe((snapshot) => {
+        snapshot.forEach(doc => {
+          if (doc.exists) {
+            this.ncomm++;
+            this.allNews.push({
+              image: doc.data()["image"],
+              title: doc.data()["title"],
+              text: doc.data()["text"],
+              author: doc.data()["author"],
+              uid: doc.data()["uid"],
+              file: doc.data()["file"],
+              country: doc.data()["country"],
+              date: doc.data()["date"],
+              id: doc.data()["id"],
+            })
+            this.allNews.reverse()
+            this.newsReady = true
+            console.log(this.allNews)
+
+          }
+        })
+      })
     }
-    else
-      return this.getNews()
+    else {
+      this.getNews().subscribe((snapshot) => {
+        snapshot.forEach(doc => {
+          if (doc.exists) {
+            this.ncomm++;
+            this.allNews.push({
+              image: doc.data()["image"],
+              title: doc.data()["title"],
+              text: doc.data()["text"],
+              author: doc.data()["author"],
+              country: doc.data()["country"],
+              file: doc.data()["file"],
+              date: doc.data()["date"],
+              id: doc.data()["id"],
+              uid: doc.data()["uid"]
+            })
+            this.allNews.reverse()
+            this.newsReady = true
+            console.log(this.allNews)
+
+
+          }
+        })
+      })
+    }
   }
+
+
 
   public removeNews(n) {
     this.firestore.collection("AllNews").doc(n.id).delete()
 
+    let index = this.allNews.indexOf(n)
+    this.allNews.splice(index, 1)
+
     if (n.country != "WorldWide") {
       this.firestore.collection("Countries").doc(n.country).collection("News").doc(n.id).delete()
-
     }
+
+
   }
 
   public goToNews(n) {
