@@ -19,6 +19,8 @@ import { AngularFireStorage } from '@angular/fire/storage';
 
 //TODO: news array in covid servece, evaluate logic move
 
+//TODO: author icon too in the news
+
 @Component({
   selector: 'app-news',
   templateUrl: './news.component.html',
@@ -176,10 +178,10 @@ export class NewsComponent implements OnInit {
     }
 
   }
-
+*/
   public removeNews(n) {
     this.covidService.removeNews(n)
     this.news = this.news.filter(a => a != n)
   }
-*/
+
 }

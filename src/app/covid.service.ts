@@ -50,6 +50,18 @@ export class CovidService {
   public newConf = []
   public newRec = []
 
+  public newsDetail: News = {
+    image: "",
+    title: "",
+    text: "",
+    author: "",
+    uid: "",
+    file: "",
+    country: "",
+    date: "",
+    id: "",
+  }
+
 
 
   private covid_API = 'https://api.covid19api.com/';  // URL to web api
@@ -234,7 +246,7 @@ export class CovidService {
       let last: Date;
       let now = new Date();
       if (doc.exists) {
-        last = doc["lastUpdate"].toDate();
+        last = doc.data()["lastUpdate"].toDate();
 
         if (last.getFullYear() === now.getFullYear() &&
           last.getMonth() === now.getMonth() &&
@@ -409,6 +421,36 @@ export class CovidService {
       this.firestore.collection("Countries").doc(n.country).collection("News").doc(n.id).delete()
 
     }
+  }
+
+  public goToNews(n) {
+    this.newsDetail = n
+    console.log(this.newsDetail)
+    this.router.navigate(['./news/' + n.id])
+  }
+
+
+  public setCurrentNews(id) {
+    this.firestore.collection("AllNews").doc(id).get().subscribe((doc) => {
+      if (doc.exists) {
+        console.log(doc)
+        this.newsDetail.id = doc.data()["id"];
+        this.newsDetail.author = doc.data()["author"];
+        this.newsDetail.country = doc.data()["country"];
+        this.newsDetail.date = doc.data()["date"];
+        this.newsDetail.file = doc.data()["file"];
+        this.newsDetail.image = doc.data()["image"];
+        this.newsDetail.text = doc.data()["text"];
+        this.newsDetail.title = doc.data()["title"];
+        this.newsDetail.uid = doc.data()["uid"];
+
+        console.log(this.newsDetail)
+      }
+      else {
+        this.router.navigate(['./news'])
+      }
+    })
+
   }
 
 }

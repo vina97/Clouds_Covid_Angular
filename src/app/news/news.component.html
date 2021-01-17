@@ -83,7 +83,7 @@
         <p class="card-text">{{n.text}} </p>
     </div>
     <div class="card-footer">
-        <button class="btn btn-info my-2 my-sm-0">
+        <button class="btn btn-info my-2 my-sm-0" (click)="covidService.goToNews(n)">
             Read News</button>
         <button class="btn btn-info my-2 my-sm-0" (click)="covidService.goToCountry(n.country)"
             *ngIf="n.country=='WorldWide' "> Go to Summary
