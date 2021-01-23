@@ -15,8 +15,6 @@ import { AngularFireStorage } from '@angular/fire/storage';
 
 //TODO: scroll up page when changing
 
-//TODO: check user if login with google when already logged
-
 //TODO: author icon too in the news
 
 @Component({
