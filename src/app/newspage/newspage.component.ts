@@ -20,7 +20,26 @@ export class NewspageComponent implements OnInit {
       this.covidService.setCurrentNews(this.route.snapshot.paramMap.get('id'))
   }
 
-  displayModal() {
-    document.getElementById('id01').style.display = 'block'
+  login() {
+    let form = document.forms["loginfo"]
+    if (form.checkValidity()) {
+      let name = form.elements["uname"].value
+      let psw = form.elements["psw"].value
+      this.covidService.loginWithPsw(name, psw)
+    }
   }
+
+  signin() {
+    let form = document.forms["loginfo"]
+    console.log(form.checkValidity())
+    if (form.checkValidity()) {
+      let name = form.elements["uname"].value
+      let psw = form.elements["psw"].value
+      console.log(name, psw)
+      this.covidService.signup(name, psw)
+    }
+
+  }
+
+
 }

@@ -12,9 +12,10 @@ import { AngularFireStorage } from '@angular/fire/storage';
 import { News } from './news.model';
 import { finalize } from 'rxjs/operators';
 import { Comment } from './comment.model'
-import { merge } from 'jquery';
 
 //TODO: valueChanges instead of get
+
+//TODO: remove user image (useless, only problematic)
 
 
 
@@ -306,6 +307,7 @@ export class CovidService {
 
   public signup(name, psw) {
     this.signup_error = false
+    this.login_error = false
     //check if username already exists
     this.firestore.collection("Users").doc(name).get().subscribe(res => {
       if (res.exists) {
@@ -317,13 +319,14 @@ export class CovidService {
           name: name,
           password: psw,
           status: "none"
-        })
+        }).then(() => this.loginWithPsw(name, psw))
       }
     })
   }
 
   public loginWithPsw(name, psw) {
     this.login_error = false
+    this.signup_error = false
     this.firestore.collection("Users").doc(name).get().subscribe(usr => {
       if (usr.exists && usr.data()["password"] == psw) {
         this.user = {
@@ -333,6 +336,7 @@ export class CovidService {
           img: "",
           status: "none"
         }
+        this.closeModal('id01')
       }
       else {
         this.login_error = true
@@ -352,6 +356,7 @@ export class CovidService {
     }
     this.setUser(this.user);
     localStorage.setItem("user", JSON.stringify(this.user))
+    this.closeModal('id01')
   }
 
   setUser(user) {
@@ -610,6 +615,15 @@ export class CovidService {
         this.comments.push(c)
       })
     }
+  }
+
+  public displayModal(id) {
+    document.getElementById(id).style.display = 'block'
+  }
+
+  public closeModal(id) {
+    document.getElementById(id).style.display = 'none'
+
   }
 
 }
