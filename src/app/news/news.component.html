@@ -13,17 +13,46 @@
 
         </div>
     </div>
-    <button class="btn btn-success my-2 my-sm-0" type="button" (click)="covidService.signInWithGoogle()"
-        *ngIf="covidService.getUser().name ==''">login</button>
+    <button class="btn btn-success my-2 my-sm-0" type="button" (click)="displayModal()"
+        *ngIf="covidService.getUser().name ==''">Login/Signin</button>
     <button class="btn btn-danger my-2 my-sm-0" type="button" (click)="covidService.signOut()"
         *ngIf="covidService.getUser().name !=''">log-out</button>
 
 </nav>
+<div id="id01" class="modal">
+
+    <form class="modal-content animate" method="post">
+        <div class="imgcontainer">
+            <span onclick="document.getElementById('id01').style.display='none'" class="close"
+                title="Close Modal">&times;</span>
+        </div>
+
+        <div class="container">
+            <button class="btn btn-success my-2 my-sm-0" type="button" (click)="covidService.signInWithGoogle()"
+                *ngIf="covidService.getUser().name ==''">login with google <i class="fa fa-google"></i></button><br>
+
+            <label for="uname"><b>Username</b></label>
+            <input type="text" placeholder="Enter Username" name="uname" required>
+
+            <label for="psw"><b>Password</b></label>
+            <input type="password" placeholder="Enter Password" name="psw" required>
+
+            <button type="button">Login</button>
+            <button type="button">Sign-In</button>
+
+        </div>
+
+        <div class="container" style="background-color:#f1f1f1">
+            <button type="button" onclick="document.getElementById('id01').style.display='none'"
+                class="cancelbtn">Cancel</button>
+        </div>
+    </form>
+</div>
 
 <div class="text-center mx-5 mt-5 pt-3">
     <!-- Button trigger modal -->
     <button class="btn btn-success my-2 my-sm-0" type="button" (click)="covidService.signInWithGoogle()"
-        *ngIf="covidService.getUser().name ==''">login to post</button>
+        *ngIf="covidService.getUser().name ==''">login with google to post</button>
     <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModalCenter"
         *ngIf="covidService.getUser().name !=''">
         Add News

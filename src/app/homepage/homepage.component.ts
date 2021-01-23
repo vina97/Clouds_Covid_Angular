@@ -31,6 +31,9 @@ export class HomepageComponent implements OnInit {
     return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
   }
 
+  displayModal() {
+    document.getElementById('id01').style.display = 'block'
+  }
 
 
 }

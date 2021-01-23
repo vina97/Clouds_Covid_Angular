@@ -23,4 +23,8 @@ export class CountryComponent implements OnInit {
   async ngOnInit(): Promise<void> {
     this.covidService.setAllInfoCountry(this.route.snapshot.paramMap.get('name'))
   }
+
+  displayModal() {
+    document.getElementById('id01').style.display = 'block'
+  }
 }

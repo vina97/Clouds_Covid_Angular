@@ -2,11 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { CovidService } from '../covid.service';
 
-//TODO: (if time) -> comment section
-
-//TODO: evaluate effectiveness of go to country
-
-
+//TODO: fix comment display (CSS) + delete possibility
+//TODO: evaluate no profile picture in comments to avoid get rejected
 
 @Component({
   selector: 'app-newspage',
@@ -23,4 +20,7 @@ export class NewspageComponent implements OnInit {
       this.covidService.setCurrentNews(this.route.snapshot.paramMap.get('id'))
   }
 
+  displayModal() {
+    document.getElementById('id01').style.display = 'block'
+  }
 }

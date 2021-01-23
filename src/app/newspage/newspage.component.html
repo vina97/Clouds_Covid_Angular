@@ -11,16 +11,57 @@
 
         </div>
     </div>
-    <button class="btn btn-success my-2 my-sm-0" type="button" (click)="covidService.signInWithGoogle()"
-        *ngIf="covidService.getUser().name ==''">login</button>
+    <button class="btn btn-success my-2 my-sm-0" type="button" (click)="displayModal()"
+        *ngIf="covidService.getUser().name ==''">Login</button>
     <div *ngIf="covidService.getUser().name !=''">
         <img [src]='covidService.getUser().img'>
         <button class="btn btn-danger my-2 my-sm-0" type="button" (click)="covidService.signOut()">log-out</button>
     </div>
     <button class="btn btn-info my-2 my-sm-0" type="button" (click)="covidService.news()">News</button>
+
 </nav>
+<div id="id01" class="modal">
+
+    <form class="modal-content animate" method="post">
+        <div class="imgcontainer">
+            <span onclick="document.getElementById('id01').style.display='none'" class="close"
+                title="Close Modal">&times;</span>
+        </div>
+
+        <div class="container">
+            <button class="btn btn-success my-2 my-sm-0" type="button" (click)="covidService.signInWithGoogle()"
+                *ngIf="covidService.getUser().name ==''">login with google <i class="fa fa-google"></i></button><br>
+
+            <label for="uname"><b>Username</b></label>
+            <input type="text" placeholder="Enter Username" name="uname" required>
+
+            <label for="psw"><b>Password</b></label>
+            <input type="password" placeholder="Enter Password" name="psw" required>
+
+            <button type="button">Login</button>
+            <button type="button">Sign-In</button>
+
+        </div>
+
+        <div class="container" style="background-color:#f1f1f1">
+            <button type="button" onclick="document.getElementById('id01').style.display='none'"
+                class="cancelbtn">Cancel</button>
+        </div>
+    </form>
+</div>
 <article class="mx-5 mt-5 pt-3">
     <header class="text-center">
+
+        <span *ngIf="covidService.allNews != undefined && covidService.allNews.length>1"
+            (click)="covidService.loadNews(-1)">
+            <i class="fa fa-arrow-left"></i> previous</span>
+        <button class="btn btn-primary" type="button"
+            (click)="covidService.goToCountry(covidService.newsDetail.country)">Go to
+            {{covidService.newsDetail.country}}</button>
+        <span *ngIf="covidService.allNews != undefined && covidService.allNews.length>1"
+            (click)="covidService.loadNews(1)">
+            next <i class="fa fa-arrow-right"></i></span>
+
         <div>
             <h1>{{covidService.newsDetail.title}}</h1>
             <p class="lead"> <i class="fa fa-user"></i>
@@ -32,18 +73,49 @@
         </div>
     </header>
     <p class="text-justify">{{covidService.newsDetail.text}}</p>
-    <div>
-        <div class="text-center">
-            <span *ngIf="covidService.allNews != undefined && covidService.allNews.length>1"
-                (click)="covidService.loadNews(-1)">
-                <i class="fa fa-arrow-left"></i> previous</span>
-            <button class="btn btn-primary" type="button"
-                (click)="covidService.goToCountry(covidService.newsDetail.country)">Go to
-                {{covidService.newsDetail.country}}</button>
-            <span *ngIf="covidService.allNews != undefined && covidService.allNews.length>1"
-                (click)="covidService.loadNews(1)">
-                next <i class="fa fa-arrow-right"></i></span>
+    <div class="row">
+        <div class="col-md-2">
         </div>
+        <div class="col-md-8">
+            <div class="page-header">
+                <h2>Comments</h2>
+            </div>
+        </div>
+        <div class="col-md-2">
+        </div>
+    </div>
+    <div class="text-center">
 
+        <button class="btn btn-success my-2 my-sm-0 " type="button" (click)="covidService.signInWithGoogle()"
+            *ngIf="covidService.getUser().name ==''">login with Google to Comment</button>
+        <div class="row" *ngIf="covidService.getUser().name !=''">
+            <div class="col-md-2">
+            </div>
+            <div class="col-md-8">
+                <textarea id="comment" class="col-md-12"></textarea><br>
+                <button type="button" class="btn btn-primary text-align-right" (click)="covidService.addComment()">
+                    Add Comment
+                </button>
+            </div>
+            <div class="col-md-2">
+            </div>
+        </div>
+    </div>
+    <div class="row" *ngFor="let c of covidService.comments">
+        <div class="col-md-2">
+        </div>
+        <div class="col-md-8">
+
+            <img class="media-left" src={{c.img}}>
+
+            <div class="media-body">
+
+                <h4 class="media-heading user_name">{{c.user}}, <i class="fa fa-calendar"></i>{{c.date}}</h4>
+
+                {{c.text}}
+            </div>
+        </div>
+        <div class="col-md-2">
+        </div>
     </div>
 </article>

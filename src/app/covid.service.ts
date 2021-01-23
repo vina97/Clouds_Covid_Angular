@@ -11,13 +11,12 @@ import { from, Observable } from 'rxjs';
 import { AngularFireStorage } from '@angular/fire/storage';
 import { News } from './news.model';
 import { finalize } from 'rxjs/operators';
+import { Comment } from './comment.model'
+import { merge } from 'jquery';
 
-//TODO: user restrictions
-//TODO: signout
 //TODO: valueChanges instead of get
 
 
-//TODO: handle routes permissions
 
 export interface FilesUploadMetadata {
   uploadProgress$: Observable<number>;
@@ -30,6 +29,8 @@ export interface FilesUploadMetadata {
 })
 export class CovidService {
 
+  public signup_error = false
+  public login_error = false
   private user: User
   public ncomm = 0;
   public countries = []
@@ -50,6 +51,8 @@ export class CovidService {
   public newDeath = []
   public newConf = []
   public newRec = []
+
+  public comments: Comment[]
 
 
 
@@ -97,6 +100,27 @@ export class CovidService {
         this.byCountry.push(new Info(elem["Country"], elem["TotalConfirmed"], elem["NewConfirmed"], elem["TotalRecovered"], elem["NewRecovered"], elem["TotalDeaths"], elem["NewDeaths"]))
       }
       this.dataSummaryReady = true
+      this.getFromApril_API2().subscribe(d => {
+
+        for (let i = 0; i < Object.keys(d["cases"]).length; i++) {
+          this.totalConf[i] = Object.values(d["cases"])[i]
+          this.totalRec[i] = Object.values(d["recovered"])[i]
+          this.totalDeath[i] = Object.values(d["deaths"])[i]
+          this.dayslabels[i] = Object.keys(d["cases"])[i]
+
+        }
+
+        for (let j = this.totalConf.length - 7; j < this.totalConf.length; j++) {
+          this.newConf[j + 7 - this.totalConf.length] = this.totalConf[j] - this.totalConf[j - 1]
+          this.newRec[j + 7 - this.totalConf.length] = this.totalRec[j] - this.totalRec[j - 1]
+          this.newDeath[j + 7 - this.totalConf.length] = this.totalDeath[j] - this.totalDeath[j - 1]
+        }
+        this.newConf[this.newConf.length] = this.summary["newCases"]
+        this.newDeath[this.newDeath.length] = this.summary["newDeath"]
+        this.newRec[this.newRec.length] = this.summary["newRecovery"]
+        this.dataReady = true
+      })
+      /*
       this.getFromApril().subscribe(d => {
 
 
@@ -138,7 +162,9 @@ export class CovidService {
         this.totalRec[this.totalRec.length] = this.summary["totalRecovery"]
         this.dataReady = true
       })
+      */
     })
+
   }
 
 
@@ -174,12 +200,17 @@ export class CovidService {
       }
     })
   }
-
+  /*
   getFromApril() {
     let now = formatDate(new Date(), 'yyyy-MM-dd', 'en');
     let from = "2020-04-13"
     let options: { responseType?: "json" }
     return this.http.get(this.covid_API + "world?from=" + from + "&to=" + now, options)
+  }
+  */
+
+  getFromApril_API2() {
+    return this.http.get("https://corona.lmao.ninja/v2/historical/all")
   }
 
   getAllFromCountry(country_name: string) {
@@ -273,6 +304,42 @@ export class CovidService {
     })
   }
 
+  public signup(name, psw) {
+    this.signup_error = false
+    //check if username already exists
+    this.firestore.collection("Users").doc(name).get().subscribe(res => {
+      if (res.exists) {
+        this.signup_error = true
+        return
+      }
+      else {
+        this.firestore.collection("Users").doc(name).set({
+          name: name,
+          password: psw,
+          status: "none"
+        })
+      }
+    })
+  }
+
+  public loginWithPsw(name, psw) {
+    this.login_error = false
+    this.firestore.collection("Users").doc(name).get().subscribe(usr => {
+      if (usr.exists && usr.data()["password"] == psw) {
+        this.user = {
+          uid: name,
+          name: name,
+          email: "",
+          img: "",
+          status: "none"
+        }
+      }
+      else {
+        this.login_error = true
+      }
+    })
+  }
+
   public async signInWithGoogle() {
     const cred = await this.afAuth.signInWithPopup(new firebase.auth.GoogleAuthProvider())
     console.log(cred.user)
@@ -280,7 +347,8 @@ export class CovidService {
       uid: cred.user.uid,
       name: cred.user.displayName,
       email: cred.user.email,
-      img: cred.user.photoURL
+      img: cred.user.photoURL,
+      status: "editor"
     }
     this.setUser(this.user);
     localStorage.setItem("user", JSON.stringify(this.user))
@@ -290,7 +358,7 @@ export class CovidService {
     this.firestore.collection("Users").doc(user.uid).set({
       name: user.name,
       email: user.email,
-      status: "None",
+      status: user.status,
       img: user.img
     })
   }
@@ -308,7 +376,8 @@ export class CovidService {
         uid: "",
         name: "",
         email: "",
-        img: ""
+        img: "",
+        status: ""
       }
       return result
     }
@@ -476,12 +545,12 @@ export class CovidService {
 
 
   public setCurrentNews(id) {
+    this.comments = []
     if (this.allNews == undefined) {
       this.filterNews(this.current)
     }
     this.firestore.collection("AllNews").doc(id).get().subscribe((doc) => {
       if (doc.exists) {
-        console.log(doc)
         this.newsDetail.id = doc.data()["id"];
         this.newsDetail.author = doc.data()["author"];
         this.newsDetail.country = doc.data()["country"];
@@ -492,7 +561,20 @@ export class CovidService {
         this.newsDetail.title = doc.data()["title"];
         this.newsDetail.uid = doc.data()["uid"];
 
-        console.log(this.newsDetail)
+        this.firestore.collection("AllNews").doc(id).collection("Comments").get().subscribe((snapshot) => {
+          snapshot.forEach(doc => {
+            if (doc.exists) {
+              let c = {
+                user: doc.data()["user"],
+                img: doc.data()["img"],
+                date: doc.data()["Date"],
+                text: doc.data()["text"]
+              }
+              this.comments.push(c)
+            }
+          })
+        })
+
       }
       else {
         this.router.navigate(['./news'])
@@ -510,6 +592,24 @@ export class CovidService {
       this.newsDetail = this.allNews[0]
     else
       this.newsDetail = this.allNews[newindex]
+  }
+
+  public addComment() {
+    let text = (<HTMLInputElement>document.getElementById("comment")).value
+    if (text != "") {
+      let c = {
+        user: this.user.name,
+        img: this.user.img,
+        date: formatDate(new Date(), 'yyyy-MM-dd', 'en'),
+        text: text
+      }
+      console.log(c)
+      this.firestore.collection("AllNews").doc(this.newsDetail.id).collection("Comments").doc(Date.now().toString() + this.user.uid).set(
+        c, { merge: true }
+      ).then(() => {
+        this.comments.push(c)
+      })
+    }
   }
 
 }
