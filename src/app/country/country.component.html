@@ -20,8 +20,10 @@
     </div>
     <button class="btn btn-success my-2 my-sm-0" type="button" (click)="covidService.displayModal('id01')"
         *ngIf="covidService.getUser().name ==''">Login/Signin</button>
-    <button class="btn btn-danger my-2 my-sm-0" type="button" (click)="covidService.signOut()"
-        *ngIf="covidService.getUser().name !=''">log-out</button>
+    <div *ngIf="covidService.getUser().name !=''">
+        <i class="fa fa-user user">{{covidService.getUser().name}}</i>
+        <button class="btn btn-danger my-2 ml-2 my-sm-0" type="button" (click)="covidService.signOut()">log-out</button>
+    </div>
     <button class="btn btn-info my-2 my-sm-0" type="button" (click)="covidService.news()">News</button>
 </nav>
 <div id="id01" class="modal">

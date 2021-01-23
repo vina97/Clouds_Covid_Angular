@@ -5,7 +5,6 @@ import { ChartType, ChartOptions, ChartDataSets } from 'chart.js';
 import { Color, Label } from 'ng2-charts';
 import { formatDate } from '@angular/common';
 
-//TODO: login in other way
 //TODO: User icon when logged -> set with CSS
 
 //TODO: proper page scroll (check offset/ evaluate nav global)
