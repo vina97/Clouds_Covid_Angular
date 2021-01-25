@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { CovidService } from '../covid.service';
 
-//TODO: fix comment display (CSS) + delete possibility
+//TODO: fix comment display (CSS) + delete possibility 
 //TODO: evaluate no profile picture in comments to avoid get rejected
 
 @Component({
@@ -16,8 +16,7 @@ export class NewspageComponent implements OnInit {
 
   ngOnInit(): void {
     this.covidService.getCountries()
-    if (this.covidService.newsDetail.id == "")
-      this.covidService.setCurrentNews(this.route.snapshot.paramMap.get('id'))
+    this.covidService.setCurrentNews(this.route.snapshot.paramMap.get('id'))
   }
 
   login() {

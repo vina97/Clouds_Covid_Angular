@@ -54,7 +54,7 @@
     <!-- Button trigger modal -->
     <button class="btn btn-success my-2 my-sm-0" type="button" (click)="covidService.signInWithGoogle()"
         *ngIf="covidService.getUser().status !='editor'">login with google to post</button>
-    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModalCenter"
+    <button type="button" class="btn btn-primary" (click)="covidService.displayModal('ModalNews')"
         *ngIf="covidService.getUser().status =='editor'">
         Add News
     </button>
@@ -63,24 +63,29 @@
 
 
     <!-- Modal -->
-    <div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog"
-        aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+    <div class="modal" id="ModalNews" tabindex="-1" role="dialog">
         <div class="modal-dialog modal-dialog-centered" role="document">
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title" id="exampleModalLongTitle">Add News</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <button type="button" class="close" (click)="covidService.closeModal('ModalNews')">
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
                 <div class="modal-body">
-                    <form id="news">
+                    <div class="text-center" *ngIf="covidService.loading">
+                        Uploading news...
+                        <div class="spinner-border" role="status">
+                            <span class="sr-only">Loading...</span>
+                        </div>
+                    </div>
+                    <form id="news" class="modal-content animate" *ngIf="covidService.loading==false">
                         <h5 class="card-title">Select an image:</h5>
                         <input type="file" accept=".png,.jpg" (change)="findFile($event)" /><br>
                         <label for="title">Title</label>
-                        <input type="text" id="title"><br>
+                        <input type="text" id="title" required><br>
                         <label for="description">Description</label>
-                        <textarea id="description"> </textarea>
+                        <textarea id="description" required> </textarea>
                         <label for="country">Country</label>
                         <select class="form-control" id="country">
                             <option>WorldWide</option>
@@ -88,73 +93,65 @@
                         </select>
                     </form>
                 </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <div class="modal-footer" *ngIf="covidService.loading==false">
+                    <button type="button" class="btn btn-danger"
+                        (click)="document.getElementById('news').reset()">Reset</button>
                     <button type="button" class="btn btn-primary" (click)="upload()" data-dismiss="modal">Upload
                         News</button>
                 </div>
             </div>
         </div>
     </div>
-</div>
 
 
 
-<div class="text-center" *ngIf="!covidService.newsReady">
-    Fetching Data...
-    <div class="spinner-border" role="status">
-        <span class="sr-only">Loading...</span>
-    </div>
-</div>
-
-<div class="text-center" *ngIf="covidService.allNews.length == 0">
-    No News to display!!
-</div>
-
-
-<div class="row">
-    <div class="card border-dark mb-3 col-3 ml-3" *ngFor="let n of covidService.allNews"
-        (click)="covidService.goToNews(n)">
-
-        <div class="card-header">
-            <h5 class="card-title">{{n.title}}
-                <p class="card-text"><small class="text-muted">{{n.country}}, {{n.date}}</small></p>
-            </h5>
-            <p class="card-text"><small class="text-muted">{{n.author}}</small></p>
-        </div>
-        <img class="card-img-top border" src={{n.image}} alt="Card image cap" height="200px">
-        <div class="card-body">
-            <p class="card-text">{{n.text}} </p>
-        </div>
-        <div class="card-footer">
-            <button class="btn btn-info my-2 my-sm-0" (click)="covidService.goToNews(n)">
-                Read News</button>
-            <button class="btn btn-info my-2 my-sm-0" (click)="covidService.goToCountry(n.country)"
-                *ngIf="n.country=='WorldWide' "> Go to Summary
-                page</button>
-            <button class="btn btn-info my-2 my-sm-0" (click)="covidService.goToCountry(n.country)"
-                *ngIf="n.country!='WorldWide' "> Go to Country
-                page</button>
-            <button class="btn btn-danger my-2 my-sm-0" *ngIf="n.author == covidService.getUser().name"
-                (click)="covidService.removeNews(n)"> Delete</button>
-            <button class="btn btn-danger my-2 my-sm-0" *ngIf="n.author == covidService.getUser().name && n.file!= '' "
-                (click)="covidService.removeFile(n)"> Delete image</button>
+    <div class="text-center" *ngIf="!covidService.newsReady">
+        Fetching Data...
+        <div class="spinner-border" role="status">
+            <span class="sr-only">Loading...</span>
         </div>
     </div>
-</div>
+
+    <div class="text-center" *ngIf="covidService.allNews.length == 0">
+        No News to display!!
+    </div>
 
 
-<label>
-    <input type="file" class="text-nowrap text-truncate" (change)="findFile($event)" />
-</label>
+    <div class="row">
+        <div class="card border-dark mb-3 col-3 ml-3" *ngFor="let n of covidService.allNews"
+            (click)="covidService.goToNews(n)">
 
-<button class="btn btn-success btn-sm" (click)="upload()">
-    Upload
-</button>
+            <div class="card-header">
+                <h5 class="card-title">{{n.title}}
+                    <p class="card-text"><small class="text-muted">{{n.country}}, {{n.date}}</small></p>
+                </h5>
+                <p class="card-text"><small class="text-muted">{{n.author}}</small></p>
+            </div>
+            <img class="card-img-top border" src={{n.image}} alt="Card image cap" height="200px">
+            <div class="card-body">
+                <p class="card-text">{{n.text}} </p>
+            </div>
+            <div class="card-footer">
+                <button class="btn btn-info my-2 my-sm-0" (click)="covidService.goToNews(n)">
+                    Read News</button>
+                <button class="btn btn-info my-2 my-sm-0" (click)="covidService.goToCountry(n.country)"
+                    *ngIf="n.country=='WorldWide' "> Go to Summary
+                    page</button>
+                <button class="btn btn-info my-2 my-sm-0" (click)="covidService.goToCountry(n.country)"
+                    *ngIf="n.country!='WorldWide' "> Go to Country
+                    page</button>
+                <button class="btn btn-danger my-2 my-sm-0" *ngIf="n.author == covidService.getUser().name"
+                    (click)="covidService.removeNews(n)"> Delete</button>
+                <button class="btn btn-danger my-2 my-sm-0"
+                    *ngIf="n.author == covidService.getUser().name && n.file!= '' "
+                    (click)="covidService.removeFile(n)"> Delete image</button>
+            </div>
+        </div>
+    </div>
 
-<div class="progress mt-2">
-    <div class="progress-bar progress-bar-info" role="progressbar" attr.aria-valuenow="{{ uploadProgress }}"
-        aria-valuemin="0" aria-valuemax="100" [ngStyle]="{ width: uploadProgress + '%' }">
-        {{ uploadProgress }}%
+    <div class="text-center">
+        <button class="btn btn-info my-2 my-sm-0" (click)="covidService.goToCountry(covidService.current)"
+            *ngIf="covidService.current!='WorldWide' "> Go to Country
+            page</button>
     </div>
 </div>

@@ -5,17 +5,17 @@ import * as $ from "jquery";
 import { AngularFireStorage } from '@angular/fire/storage';
 
 
-//TODO: proper modal hide
-//TODO: add news as ngModel + ngSubmit + reset to undefined
-//TODO: handle news edit -> video
 //TODO: news indexing + id -> almost
 //TODO: properly fix CSS modal
-//TODO: show upload file progress
-//TODO: Proper message when no news
 
 //TODO: scroll up page when changing
 
-//TODO: author icon too in the news
+//TODO: highlight not filled items in form
+
+//TODO: show news sorted by date_time
+//TOFIX: set file null when removing image
+
+//TODO: remove file after update
 
 @Component({
   selector: 'app-news',
@@ -68,45 +68,38 @@ export class NewsComponent implements OnInit {
 
 
   public upload(): void {
-    let f = document.forms["news"]
+    let f = <HTMLFormElement>document.forms["news"]
     let u = this.covidService.getUser()
-
-    if (this.f !== undefined) {
-      let n = {
-        image: "",
-        title: f.elements["title"].value,
-        text: f.elements["description"].value,
-        author: u.name,
-        country: f.elements["country"].value,
-        date: new Date().toISOString().split("T")[0],
-        file: "",
-        id: "",
-        uid: u.uid,
-        progress: 0,
-      }
-      this.covidService.addNewsWithFile(n, this.f).subscribe(
-        percentage => {
-          this.uploadProgress = Math.round(percentage);
-        },
-        error => {
-          console.log(error);
+    if (f.checkValidity()) {
+      if (this.f !== undefined) {
+        let n = {
+          image: "",
+          title: f.elements["title"].value,
+          text: f.elements["description"].value,
+          author: u.name,
+          country: f.elements["country"].value,
+          date: new Date().toISOString().split("T")[0],
+          file: "",
+          id: "",
+          uid: u.uid,
+          progress: 0,
         }
-
-      );
-    }
-    else {
-      let n = {
-        image: "https://firebasestorage.googleapis.com/v0/b/covid-project-eurecom.appspot.com/o/covid19_icon.png?alt=media&token=758be0c7-a52f-486e-aec2-05882964bbc1",
-        title: f.elements["title"].value,
-        text: f.elements["description"].value,
-        author: u.name,
-        country: f.elements["country"].value,
-        date: new Date().toISOString().split("T")[0],
-        id: "",
-        file: "",
-        uid: u.uid,
+        this.covidService.addNewsWithFile(n, this.f)
       }
-      this.covidService.addNews(n)
+      else {
+        let n = {
+          image: "https://firebasestorage.googleapis.com/v0/b/covid-project-eurecom.appspot.com/o/covid19_icon.png?alt=media&token=758be0c7-a52f-486e-aec2-05882964bbc1",
+          title: f.elements["title"].value,
+          text: f.elements["description"].value,
+          author: u.name,
+          country: f.elements["country"].value,
+          date: new Date().toISOString().split("T")[0],
+          id: "",
+          file: "",
+          uid: u.uid,
+        }
+        this.covidService.addNews(n)
+      }
     }
   }
 

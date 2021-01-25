@@ -40,6 +40,7 @@ export class CovidService {
   public dataSummaryReady = false
   public dataReady = false
   public newsReady = false
+  public loading = false
 
 
 
@@ -54,6 +55,7 @@ export class CovidService {
   public newRec = []
 
   public comments: Comment[]
+  public loadComments = false
 
 
 
@@ -402,7 +404,8 @@ export class CovidService {
     return this.firestore.collection("AllNews",).get()
   }
 
-  addNewsWithFile(n: News, f: File): Observable<number> {
+  addNewsWithFile(n: News, f: File) {
+    this.loading = true
     let randomId = Math.random().toString(36).slice(2)
     const filePath = `/${randomId + f.name}`
     const storageRef = this.afStorage.ref(filePath);
@@ -418,12 +421,12 @@ export class CovidService {
       })
     ).subscribe();
 
-    return uploadTask.percentageChanges();
   }
 
 
 
   public addNews(n: News) {
+    this.loading = true
     n.id = Math.random().toString(36).slice(2) + n.uid
     this.firestore.collection("AllNews").doc(n.id).set(
       n, { merge: true }
@@ -436,12 +439,14 @@ export class CovidService {
 
     }
     this.allNews.push(n)
-    //let modal = document.getElementById("exampleModalCenter")
+    this.loading = false
+    this.closeModal("ModalNews")
   }
 
   public removeFile(n: News) {
     let f = n.file
     n.image = "https://firebasestorage.googleapis.com/v0/b/covid-project-eurecom.appspot.com/o/covid19_icon.png?alt=media&token=758be0c7-a52f-486e-aec2-05882964bbc1";
+    n.file = ""
 
     this.afStorage.ref("").child(f).delete();
     this.firestore.collection("AllNews").doc(n.id).set(
@@ -456,6 +461,7 @@ export class CovidService {
     }).then(() => {
       let index = this.allNews.indexOf(n)
       this.allNews[index].image = "https://firebasestorage.googleapis.com/v0/b/covid-project-eurecom.appspot.com/o/covid19_icon.png?alt=media&token=758be0c7-a52f-486e-aec2-05882964bbc1";
+      this.allNews[index].file = ""
     }
     )
 
@@ -530,6 +536,14 @@ export class CovidService {
 
 
   public removeNews(n) {
+    this.firestore.collection("AllNews").doc(n.id).collection("Comments").get().subscribe((snapshot) => {
+      snapshot.forEach(doc => {
+        if (doc.exists) {
+          let id = doc.data()["id"]
+          this.firestore.collection("AllNews").doc(n.id).collection("Comments").doc(id).delete()
+        }
+      })
+    })
     this.firestore.collection("AllNews").doc(n.id).delete()
 
     let index = this.allNews.indexOf(n)
@@ -545,7 +559,9 @@ export class CovidService {
   public goToNews(n) {
     this.newsDetail = n
     console.log(this.newsDetail)
+    this.comments = []
     this.router.navigate(['./news/' + n.id])
+    this.setCurrentNews(n.id)
   }
 
 
@@ -565,7 +581,7 @@ export class CovidService {
         this.newsDetail.text = doc.data()["text"];
         this.newsDetail.title = doc.data()["title"];
         this.newsDetail.uid = doc.data()["uid"];
-
+        this.loadComments = true
         this.firestore.collection("AllNews").doc(id).collection("Comments").get().subscribe((snapshot) => {
           snapshot.forEach(doc => {
             if (doc.exists) {
@@ -573,12 +589,15 @@ export class CovidService {
                 user: doc.data()["user"],
                 img: doc.data()["img"],
                 date: doc.data()["Date"],
-                text: doc.data()["text"]
+                text: doc.data()["text"],
+                id: doc.data()["id"]
               }
               this.comments.push(c)
             }
           })
         })
+        this.loadComments = false
+
 
       }
       else {
@@ -591,12 +610,14 @@ export class CovidService {
   public loadNews(i) {
     let index = this.allNews.indexOf(this.newsDetail)
     let newindex = index + i
+    console.log(newindex)
+    console.log(this.allNews.length)
     if (newindex < 0)
-      this.newsDetail = this.allNews[this.allNews.length - 1]
+      this.goToNews(this.allNews[this.allNews.length - 1])
     else if (newindex == this.allNews.length)
-      this.newsDetail = this.allNews[0]
+      this.goToNews(this.allNews[0])
     else
-      this.newsDetail = this.allNews[newindex]
+      this.goToNews(this.allNews[newindex])
   }
 
   public addComment() {
@@ -606,10 +627,11 @@ export class CovidService {
         user: this.user.name,
         img: this.user.img,
         date: formatDate(new Date(), 'yyyy-MM-dd', 'en'),
-        text: text
+        text: text,
+        id: Date.now().toString() + this.user.uid
       }
       console.log(c)
-      this.firestore.collection("AllNews").doc(this.newsDetail.id).collection("Comments").doc(Date.now().toString() + this.user.uid).set(
+      this.firestore.collection("AllNews").doc(this.newsDetail.id).collection("Comments").doc(c.id).set(
         c, { merge: true }
       ).then(() => {
         this.comments.push(c)
@@ -619,11 +641,21 @@ export class CovidService {
 
   public displayModal(id) {
     document.getElementById(id).style.display = 'block'
+    window.onclick = function (event) {
+      if (event.target == document.getElementById(id)) {
+        if (id == "ModalNews") {
+          (<HTMLFormElement>document.getElementById("news")).reset()
+        }
+        document.getElementById(id).style.display = 'none'
+      }
+    }
   }
 
   public closeModal(id) {
+    if (id == "ModalNews") {
+      (<HTMLFormElement>document.getElementById("news")).reset()
+    }
     document.getElementById(id).style.display = 'none'
-
   }
 
 }
