@@ -1,5 +1,7 @@
-<h3>Daily Corona virus cases {{covidService.current}}</h3>
-<div class="plot" id="last7">
+<div class="anchor" id="last7">
+    <h3>Daily Corona virus cases {{covidService.current}}</h3>
+</div>
+<div class="plot">
     <div class="text-center" *ngIf="!covidService.dataReady">
         Fetching Data...
         <div class="spinner-border" role="status">

@@ -14,7 +14,8 @@
             Select Country
         </a>
         <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
-            <a class="dropdown-item" [routerLink]="['/country', c]" *ngFor="let c of covidService.countries">{{c}}</a>
+            <a class="dropdown-item" (click)="covidService.goToCountry(c)"
+                *ngFor="let c of covidService.countries">{{c}}</a>
 
         </div>
     </div>

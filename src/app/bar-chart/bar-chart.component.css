@@ -1,0 +1,6 @@
+div.anchor{
+    display: block;
+    position: relative;
+    padding-top: 70px; 
+    margin-top: -70px;
+}

@@ -117,18 +117,18 @@
     </div>
 
 
-    <div class="row">
-        <div class="card border-dark mb-3 col-3 ml-3" *ngFor="let n of covidService.allNews"
-            (click)="covidService.goToNews(n)">
+    <div class="row text-center">
+        <div class="card border-dark mb-3 col-5 ml-5 pl-3" *ngFor="let n of covidService.allNews">
 
-            <div class="card-header">
+            <div class="card-header " (click)="covidService.goToNews(n)">
                 <h5 class="card-title">{{n.title}}
-                    <p class="card-text"><small class="text-muted">{{n.country}}, {{n.date}}</small></p>
+                    <p class="card-text"><small class="text-muted"><i class="fa fa-globe"></i>{{n.country}}, <i
+                                class="fa fa-calendar"></i>{{n.date}}</small></p>
                 </h5>
-                <p class="card-text"><small class="text-muted">{{n.author}}</small></p>
+                <p class="card-text"><small class="text-muted"><i class="fa fa-user"></i> {{n.author}}</small></p>
             </div>
-            <img class="card-img-top border" src={{n.image}} alt="Card image cap" height="200px">
-            <div class="card-body">
+            <div class="card-body" (click)="covidService.goToNews(n)">
+                <img class="card-img-top border" src={{n.image}} alt="Card image cap" height="200px">
                 <p class="card-text">{{n.text}} </p>
             </div>
             <div class="card-footer">

@@ -14,3 +14,10 @@ table{
 }
 
 .tcountry thead th { position: sticky; top: 0; background:#eee; }
+
+div.anchor{
+    display: block;
+    position: relative;
+    padding-top: 70px; 
+    margin-top: -70px;
+}

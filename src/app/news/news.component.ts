@@ -1,21 +1,21 @@
 import { Component, OnInit } from '@angular/core';
 import { CovidService } from '../covid.service';
 import { News } from '../news.model';
-import * as $ from "jquery";
 import { AngularFireStorage } from '@angular/fire/storage';
 
 
-//TODO: news indexing + id -> almost
 //TODO: properly fix CSS modal
+
+//TODO: sort news
 
 //TODO: scroll up page when changing
 
+//TODO: limit text length in news shown
+
 //TODO: highlight not filled items in form
 
-//TODO: show news sorted by date_time
-//TOFIX: set file null when removing image
+//TODO: change display for mobile
 
-//TODO: remove file after update
 
 @Component({
   selector: 'app-news',
@@ -85,6 +85,7 @@ export class NewsComponent implements OnInit {
           progress: 0,
         }
         this.covidService.addNewsWithFile(n, this.f)
+        this.f = undefined
       }
       else {
         let n = {

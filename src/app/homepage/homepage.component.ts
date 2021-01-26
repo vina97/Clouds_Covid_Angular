@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { CovidService } from '../covid.service';
 
-//TODO: proper page scroll (check offset/ evaluate nav global)
+//TODO: responsive nav
 
 @Component({
   selector: 'app-homepage',

@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 import { formatDate } from '@angular/common';
 import firebase from "firebase/app";
 import { AngularFireAuth } from '@angular/fire/auth'
@@ -7,13 +7,11 @@ import { AngularFirestore } from '@angular/fire/firestore'
 import { Router } from '@angular/router';
 import { Info } from './info.model';
 import { User } from './user.model';
-import { from, Observable } from 'rxjs';
+import { Observable } from 'rxjs';
 import { AngularFireStorage } from '@angular/fire/storage';
 import { News } from './news.model';
 import { finalize } from 'rxjs/operators';
 import { Comment } from './comment.model'
-
-//TODO: valueChanges instead of get
 
 //TODO: remove user image (useless, only problematic)
 
@@ -394,14 +392,16 @@ export class CovidService {
     this.user = null;
     localStorage.removeItem("User")
     this.router.navigate(["/home"])
+    window.scrollTo(0, 0)
   }
 
   public news() {
     this.router.navigate(['./news'])
+    window.scrollTo(0, 0)
   }
 
   public getNews() {
-    return this.firestore.collection("AllNews",).get()
+    return this.firestore.collection("AllNews", ref => ref.orderBy('date', 'asc')).get()
   }
 
   addNewsWithFile(n: News, f: File) {
@@ -419,7 +419,8 @@ export class CovidService {
           this.addNews(n);
         });
       })
-    ).subscribe();
+    ).subscribe(() => {
+    });
 
   }
 
@@ -438,7 +439,7 @@ export class CovidService {
       )
 
     }
-    this.allNews.push(n)
+    this.allNews.unshift(n)
     this.loading = false
     this.closeModal("ModalNews")
   }
@@ -473,10 +474,12 @@ export class CovidService {
       this.current = cname
       this.setAllInfoCountry(cname)
       this.router.navigate(['./country/' + cname])
+      window.scrollTo(0, 0)
     }
     else {
       this.current = cname
       this.router.navigate(['./summary/'])
+      window.scrollTo(0, 0)
     }
 
   }
@@ -488,7 +491,7 @@ export class CovidService {
     this.current = country
     this.allNews = []
     if (country != "WorldWide") {
-      this.firestore.collection("Countries").doc(country).collection("News").get().subscribe((snapshot) => {
+      this.firestore.collection("Countries").doc(country).collection("News", ref => ref.orderBy('date', 'asc')).get().subscribe((snapshot) => {
         snapshot.forEach(doc => {
           if (doc.exists) {
             this.allNews.push({
@@ -561,6 +564,7 @@ export class CovidService {
     console.log(this.newsDetail)
     this.comments = []
     this.router.navigate(['./news/' + n.id])
+    window.scrollTo(0, 0)
     this.setCurrentNews(n.id)
   }
 
@@ -582,7 +586,7 @@ export class CovidService {
         this.newsDetail.title = doc.data()["title"];
         this.newsDetail.uid = doc.data()["uid"];
         this.loadComments = true
-        this.firestore.collection("AllNews").doc(id).collection("Comments").get().subscribe((snapshot) => {
+        this.firestore.collection("AllNews").doc(id).collection("Comments", ref => ref.orderBy('Date', 'asc')).get().subscribe((snapshot) => {
           snapshot.forEach(doc => {
             if (doc.exists) {
               let c = {
@@ -602,6 +606,7 @@ export class CovidService {
       }
       else {
         this.router.navigate(['./news'])
+        window.scrollTo(0, 0)
       }
     })
 
@@ -634,7 +639,7 @@ export class CovidService {
       this.firestore.collection("AllNews").doc(this.newsDetail.id).collection("Comments").doc(c.id).set(
         c, { merge: true }
       ).then(() => {
-        this.comments.push(c)
+        this.comments.unshift(c)
       })
     }
   }
@@ -652,8 +657,10 @@ export class CovidService {
   }
 
   public closeModal(id) {
+    console.log("closing")
     if (id == "ModalNews") {
-      (<HTMLFormElement>document.getElementById("news")).reset()
+      if (document.getElementById("news") != undefined)
+        (<HTMLFormElement>document.getElementById("news")).reset()
     }
     document.getElementById(id).style.display = 'none'
   }
