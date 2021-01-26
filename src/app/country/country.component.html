@@ -1,9 +1,9 @@
 <nav class="navbar navbar-dark bg-dark fixed-top">
     <a class="navbar-brand" (click)="covidService.goToCountry('WorldWide')"> Covid-19</a>
-    <a href="home#summary">summary</a>
-    <a href="home#distribution">distribution</a>
-    <a href="home#last7">Last 7 days</a>
-    <a href="home#April">From first day</a>
+    <a href="country/{{covidService.current}}#summary">summary</a>
+    <a href="country/{{covidService.current}}#distribution">distribution</a>
+    <a href="country/{{covidService.current}}#last7">Last 7 days</a>
+    <a href="country/{{covidService.current}}#April">From first day</a>
 
 
 

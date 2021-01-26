@@ -1,12 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { CovidService } from '../covid.service';
-import { Info } from '../info.model';
-import { ChartType, ChartOptions, ChartDataSets } from 'chart.js';
-import { Color, Label } from 'ng2-charts';
-import { formatDate } from '@angular/common';
-import { ActivatedRoute } from '@angular/router';
-
-//TODO: CSS to fix size
+import { ChartOptions, ChartDataSets } from 'chart.js';
+import { Label } from 'ng2-charts';
 
 @Component({
   selector: 'app-line-chart',
@@ -19,6 +14,7 @@ export class LineChartComponent implements OnInit {
   public lineChartLabels: Label[] = [];
   public lineChartOptions: (ChartOptions) = {
     responsive: true,
+    maintainAspectRatio: false
   };
 
   public lineChartLegend = true;
@@ -26,7 +22,7 @@ export class LineChartComponent implements OnInit {
   country: string;
 
 
-  constructor(private route: ActivatedRoute, public covidService: CovidService) { }
+  constructor(public covidService: CovidService) { }
 
   ngOnInit(): void {
 

@@ -1,3 +1,16 @@
 .highlight{
     color: blue;
 }
+
+.tcountry{
+    height: 400px;
+    width: 100%;
+    overflow-y: scroll;
+}
+
+table{
+    border-collapse: collapse;
+    width: 100%;
+}
+
+.tcountry thead th { position: sticky; top: 0; background:#eee; }

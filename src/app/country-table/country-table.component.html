@@ -5,48 +5,50 @@
         <span class="sr-only">Loading...</span>
     </div>
 </div>
-<table *ngIf="covidService.dataReady" class="table table-bordered" id="countries">
-    <thead>
-        <th (click)="countrySort()">Country<br>
-            <i class="fa fa-arrow-up highlight" id="countryUp"></i>
-            <i class="fa fa-arrow-down " id="countryDown"></i>
-        </th>
-        <th (click)="numSort('newCases')">New Cases<br>
-            <i class="fa fa-arrow-up " id="newCasesUp"></i>
-            <i class="fa fa-arrow-down " id="newCasesDown"></i>
-        </th>
-        <th (click)="numSort('totalCases')">Total Cases<br>
-            <i class="fa fa-arrow-up " id="totalCasesUp"></i>
-            <i class="fa fa-arrow-down " id="totalCasesDown"></i>
-        </th>
-        <th (click)="numSort('newRecovery')">New Recoveries<br>
-            <i class="fa fa-arrow-up " id="newRecoveryUp"></i>
-            <i class="fa fa-arrow-down " id="newRecoveryDown"></i>
-        </th>
-        <th (click)="numSort('totalRecovery')">Total Recoveries<br>
-            <i class="fa fa-arrow-up " id="totalRecoveryUp"></i>
-            <i class="fa fa-arrow-down " id="totalRecoveryDown"></i>
-        </th>
-        <th (click)="numSort('newDeath')">New Deaths<br>
-            <i class="fa fa-arrow-up " id="newDeathUp"></i>
-            <i class="fa fa-arrow-down " id="newDeathDown"></i>
-        </th>
-        <th (click)="numSort('totalDeath')">Total Deaths<br>
-            <i class="fa fa-arrow-up " id="totalDeathUp"></i>
-            <i class="fa fa-arrow-down " id="totalDeathDown"></i>
-        </th>
-    </thead>
-    <tbody>
+<div class="tcountry">
+    <table *ngIf="covidService.dataReady" class="table table-bordered" id="countries">
+        <thead>
+            <th (click)="countrySort()">Country<br>
+                <i class="fa fa-arrow-up " id="countryUp"></i>
+                <i class="fa fa-arrow-down highlight" id="countryDown"></i>
+            </th>
+            <th (click)="numSort('newCases')">New Cases<br>
+                <i class="fa fa-arrow-up " id="newCasesUp"></i>
+                <i class="fa fa-arrow-down " id="newCasesDown"></i>
+            </th>
+            <th (click)="numSort('totalCases')">Total Cases<br>
+                <i class="fa fa-arrow-up " id="totalCasesUp"></i>
+                <i class="fa fa-arrow-down " id="totalCasesDown"></i>
+            </th>
+            <th (click)="numSort('newRecovery')">New Recoveries<br>
+                <i class="fa fa-arrow-up " id="newRecoveryUp"></i>
+                <i class="fa fa-arrow-down " id="newRecoveryDown"></i>
+            </th>
+            <th (click)="numSort('totalRecovery')">Total Recoveries<br>
+                <i class="fa fa-arrow-up " id="totalRecoveryUp"></i>
+                <i class="fa fa-arrow-down " id="totalRecoveryDown"></i>
+            </th>
+            <th (click)="numSort('newDeath')">New Deaths<br>
+                <i class="fa fa-arrow-up " id="newDeathUp"></i>
+                <i class="fa fa-arrow-down " id="newDeathDown"></i>
+            </th>
+            <th (click)="numSort('totalDeath')">Total Deaths<br>
+                <i class="fa fa-arrow-up " id="totalDeathUp"></i>
+                <i class="fa fa-arrow-down " id="totalDeathDown"></i>
+            </th>
+        </thead>
+        <tbody>
 
-        <tr *ngFor="let c of byCountry">
-            <td (click)="covidService.goToCountry(c.name)">{{c.name}}</td>
-            <td class="table-warning" (click)="covidService.goToCountry(c.name)">{{c.newCases}}</td>
-            <td class="table-warning" (click)="covidService.goToCountry(c.name)"> {{c.totalCases}}</td>
-            <td class="table-info" (click)="covidService.goToCountry(c.name)">{{c.newRecovery}}</td>
-            <td class="table-info" (click)="covidService.goToCountry(c.name)">{{c.totalRecovery}}</td>
-            <td class="table-danger" (click)="covidService.goToCountry(c.name)">{{c.newDeath}}</td>
-            <td class="table-danger" (click)="covidService.goToCountry(c.name)">{{c.totalDeath}}</td>
+            <tr *ngFor="let c of byCountry">
+                <td (click)="covidService.goToCountry(c.name)">{{c.name}}</td>
+                <td class="table-warning" (click)="covidService.goToCountry(c.name)">{{c.newCases}}</td>
+                <td class="table-warning" (click)="covidService.goToCountry(c.name)"> {{c.totalCases}}</td>
+                <td class="table-info" (click)="covidService.goToCountry(c.name)">{{c.newRecovery}}</td>
+                <td class="table-info" (click)="covidService.goToCountry(c.name)">{{c.totalRecovery}}</td>
+                <td class="table-danger" (click)="covidService.goToCountry(c.name)">{{c.newDeath}}</td>
+                <td class="table-danger" (click)="covidService.goToCountry(c.name)">{{c.totalDeath}}</td>
 
-        </tr>
-    </tbody>
-</table>
+            </tr>
+        </tbody>
+    </table>
+</div>

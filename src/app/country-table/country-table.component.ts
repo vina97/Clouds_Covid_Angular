@@ -2,7 +2,6 @@ import { Component, OnInit } from '@angular/core';
 import { CovidService } from '../covid.service';
 import { Info } from '../info.model';
 
-//TODO: CSS to fix size
 
 @Component({
   selector: 'app-country-table',
@@ -12,8 +11,8 @@ import { Info } from '../info.model';
 export class CountryTableComponent implements OnInit {
 
   public byCountry: Info[]
-  sorted: String
-  up: Boolean
+  sorted = "Country"
+  up = true
   constructor(public covidService: CovidService) { }
 
   ngOnInit(): void {
@@ -23,7 +22,8 @@ export class CountryTableComponent implements OnInit {
         let elem = data["Countries"][i]
         this.byCountry.push(new Info(elem["Country"], elem["TotalConfirmed"], elem["NewConfirmed"], elem["TotalRecovered"], elem["NewRecovered"], elem["TotalDeaths"], elem["NewDeaths"]))
       }
-      this.countrySort()
+
+
     })
   }
 

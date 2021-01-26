@@ -1,15 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { CovidService } from '../covid.service';
 import { Info } from '../info.model';
-import { ChartType, ChartOptions, ChartDataSets } from 'chart.js';
-import { Color, Label } from 'ng2-charts';
-import { formatDate } from '@angular/common';
+import { ChartType, ChartOptions } from 'chart.js';
+import { Label } from 'ng2-charts';
 import { ActivatedRoute } from '@angular/router';
-import { News } from '../news.model';
-
-//*
-//TODO: summary retrival for country page
-//*
 
 @Component({
   selector: 'app-pie-chart',

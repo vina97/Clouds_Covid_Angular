@@ -1,12 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { Info } from '../info.model';
-import { ChartType, ChartOptions, ChartDataSets } from 'chart.js';
-import { Color, Label } from 'ng2-charts';
 import { CovidService } from '../covid.service';
-import { formatDate } from '@angular/common';
 
-
+//TODO: offset for in page scroll 
 
 @Component({
   selector: 'app-country',

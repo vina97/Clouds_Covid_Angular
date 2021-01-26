@@ -2,8 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { CovidService } from '../covid.service';
 
-//TODO: fix comment display (CSS) + delete possibility 
-//TODO: evaluate no profile picture in comments to avoid get rejected
+//TODO: sort by date + delete possibility 
+//TODO: row to delimitate comments
 
 @Component({
   selector: 'app-newspage',
