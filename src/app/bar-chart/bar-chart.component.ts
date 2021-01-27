@@ -3,7 +3,6 @@ import { CovidService } from '../covid.service';
 import { ChartType, ChartOptions, ChartDataSets } from 'chart.js';
 import { Label } from 'ng2-charts';
 import { formatDate } from '@angular/common';
-import { ActivatedRoute } from '@angular/router';
 
 
 @Component({

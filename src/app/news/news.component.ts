@@ -3,19 +3,7 @@ import { CovidService } from '../covid.service';
 import { News } from '../news.model';
 import { AngularFireStorage } from '@angular/fire/storage';
 
-
-//TODO: properly fix CSS modal
-
 //TODO: sort news
-
-//TODO: scroll up page when changing
-
-//TODO: limit text length in news shown
-
-//TODO: highlight not filled items in form
-
-//TODO: change display for mobile
-
 
 @Component({
   selector: 'app-news',

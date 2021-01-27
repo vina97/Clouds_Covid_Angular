@@ -586,13 +586,13 @@ export class CovidService {
         this.newsDetail.title = doc.data()["title"];
         this.newsDetail.uid = doc.data()["uid"];
         this.loadComments = true
-        this.firestore.collection("AllNews").doc(id).collection("Comments", ref => ref.orderBy('Date', 'asc')).get().subscribe((snapshot) => {
+        this.firestore.collection("AllNews").doc(id).collection("Comments").get().subscribe((snapshot) => {
           snapshot.forEach(doc => {
             if (doc.exists) {
               let c = {
                 user: doc.data()["user"],
                 img: doc.data()["img"],
-                date: doc.data()["Date"],
+                date: doc.data()["date"],
                 text: doc.data()["text"],
                 id: doc.data()["id"]
               }

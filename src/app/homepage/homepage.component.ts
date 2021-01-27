@@ -1,8 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { CovidService } from '../covid.service';
 
-//TODO: responsive nav
-
 @Component({
   selector: 'app-homepage',
   templateUrl: './homepage.component.html',
@@ -34,15 +32,12 @@ export class HomepageComponent implements OnInit {
 
   signin() {
     let form = document.forms["loginfo"]
-    console.log(form.checkValidity())
     if (form.checkValidity()) {
       let name = form.elements["uname"].value
       let psw = form.elements["psw"].value
-      console.log(name, psw)
       this.covidService.signup(name, psw)
     }
 
   }
-
 
 }

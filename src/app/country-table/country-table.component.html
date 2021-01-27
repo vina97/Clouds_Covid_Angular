@@ -42,8 +42,8 @@
         </thead>
         <tbody>
 
-            <tr *ngFor="let c of byCountry">
-                <td (click)="covidService.goToCountry(c.name)">{{c.name}}</td>
+            <tr (click)="covidService.goToCountry(c.name)" *ngFor="let c of byCountry">
+                <td>{{c.name}}</td>
                 <td class="table-warning" (click)="covidService.goToCountry(c.name)">{{c.newCases}}</td>
                 <td class="table-warning" (click)="covidService.goToCountry(c.name)"> {{c.totalCases}}</td>
                 <td class="table-info" (click)="covidService.goToCountry(c.name)">{{c.newRecovery}}</td>

@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { CovidService } from '../covid.service';
 
-//TODO: offset for in page scroll 
+//TODO: highlight not filled form
 
 @Component({
   selector: 'app-country',
@@ -31,11 +31,9 @@ export class CountryComponent implements OnInit {
 
   signin() {
     let form = document.forms["loginfo"]
-    console.log(form.checkValidity())
     if (form.checkValidity()) {
       let name = form.elements["uname"].value
       let psw = form.elements["psw"].value
-      console.log(name, psw)
       this.covidService.signup(name, psw)
     }
 

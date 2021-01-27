@@ -2,8 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { CovidService } from '../covid.service';
 
-//TODO: sort by date + delete possibility 
-//TODO: row to delimitate comments
+//TODO: sort comments by date + delete possibility 
+//TOEVALUATE: avoid stretching image
 
 @Component({
   selector: 'app-newspage',
@@ -30,11 +30,9 @@ export class NewspageComponent implements OnInit {
 
   signin() {
     let form = document.forms["loginfo"]
-    console.log(form.checkValidity())
     if (form.checkValidity()) {
       let name = form.elements["uname"].value
       let psw = form.elements["psw"].value
-      console.log(name, psw)
       this.covidService.signup(name, psw)
     }
 

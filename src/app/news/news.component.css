@@ -3,18 +3,30 @@
     overflow-y: auto;
 }
 
-
-
-
-  
 input[type=text], input[type=password] {
   width: 100%;
   padding: 12px 20px;
-  margin: 8px 0;
+  margin-bottom: 8px;
   display: inline-block;
   border: 1px solid #ccc;
   box-sizing: border-box;
 }
+
+input:invalid {
+  border-color: red;
+}
+
+textarea {
+  width: 100%;
+  height: 150px;
+  padding: 12px 20px;
+  box-sizing: border-box;
+  border: 2px solid #ccc;
+  border-radius: 4px;
+  background-color: #f8f8f8;
+  resize: none;
+}
+  
 
 button:hover {
   opacity: 0.8;
@@ -94,8 +106,12 @@ span.psw {
   to {transform: scale(1)}
 }
 
+.news{
+  width: 40%;
+}
+
 /* Change styles for span and cancel button on extra small screens */
-@media screen and (max-width: 300px) {
+@media screen and (max-width: 800px) {
   span.psw {
      display: block;
      float: none;
@@ -103,8 +119,13 @@ span.psw {
   .cancelbtn {
      width: 100%;
   }
+
+  .news{
+    width: 100%;
+  }
 }
 
 .user{
   color: white;
 }
+
