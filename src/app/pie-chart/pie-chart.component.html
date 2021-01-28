@@ -54,7 +54,8 @@
                         <span class="sr-only">Loading...</span>
                     </div>
                 </td>
-                <td *ngIf="covidService.dataReady">{{covidService.summary.recoveryRate.toString() }}%</td>
+                <td *ngIf="covidService.dataReady">{{covidService.summary.recoveryRate.toString() | number : '1.2-2' }}%
+                </td>
             </tr>
             <tr class="table-danger">
                 <td>Total Deaths</td>
@@ -81,7 +82,8 @@
                         <span class="sr-only">Loading...</span>
                     </div>
                 </td>
-                <td *ngIf="covidService.dataReady">{{covidService.summary.mortalityRate.toString() }}%</td>
+                <td *ngIf="covidService.dataReady">{{covidService.summary.mortalityRate.toString() | number : '1.2-2'
+                    }}%</td>
             </tr>
         </tbody>
     </table>

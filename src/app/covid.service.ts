@@ -89,10 +89,8 @@ export class CovidService {
     this.totalConf = []
     this.totalDeath = []
     this.totalRec = []
-    console.log("taking data")
     this.getSummary().subscribe(data => {
       this.summary = new Info("Global", data["Global"]["TotalConfirmed"], data["Global"]["NewConfirmed"], data["Global"]["TotalRecovered"], data["Global"]["NewRecovered"], data["Global"]["TotalDeaths"], data["Global"]["NewDeaths"])
-      console.log(this.summary)
       this.byCountry = new Array<Info>();
       this.countries = []
       for (let i = 0; i < data["Countries"].length; i++) {
@@ -217,7 +215,6 @@ export class CovidService {
   getAllFromCountry(country_name: string) {
     let options: { responseType?: "json" }
     this.http.get(this.covid_API + "dayone/country/" + country_name, options).subscribe(d => {
-      console.log(d)
       let sortable = []
       for (let elem in d) {
         //Avoid problems with States like France
@@ -271,15 +268,12 @@ export class CovidService {
         if (last.getFullYear() === now.getFullYear() &&
           last.getMonth() === now.getMonth() &&
           last.getDate() === now.getDate()) {
-          console.log("no update")
           this.summary = new Info(doc.data()["name"], doc.data()["totalCases"], doc.data()["newCases"], doc.data()["totalRecovery"], doc.data()["newRecovery"], doc.data()["totalDeath"], doc.data()["newDeath"])
-          console.log(this.summary)
           this.dataSummaryReady = true
           this.getAllFromCountry(country_name)
           return
         }
       }
-      console.log("update")
 
       this.getSummary().subscribe(data => {
         let elem = data["Countries"][index]
@@ -345,7 +339,6 @@ export class CovidService {
 
   public async signInWithGoogle() {
     const cred = await this.afAuth.signInWithPopup(new firebase.auth.GoogleAuthProvider())
-    console.log(cred.user)
     this.user = {
       uid: cred.user.uid,
       name: cred.user.displayName,
@@ -555,7 +548,6 @@ export class CovidService {
 
   public goToNews(n) {
     this.newsDetail = n
-    console.log(this.newsDetail)
     this.router.navigate(['./news/' + n.id])
     window.scrollTo(0, 0)
     this.setCurrentNews(n.id)
@@ -590,7 +582,6 @@ export class CovidService {
                 id: doc.data()["id"],
                 uid: doc.data()["uid"]
               }
-              console.log("comment")
               this.comments.unshift(c)
               this.comments = this.sortbydateDecr(this.comments)
             }
@@ -610,8 +601,6 @@ export class CovidService {
   public loadNews(i) {
     let index = this.allNews.indexOf(this.newsDetail)
     let newindex = index + i
-    console.log(newindex)
-    console.log(this.allNews.length)
     if (newindex < 0)
       this.goToNews(this.allNews[this.allNews.length - 1])
     else if (newindex == this.allNews.length)
@@ -630,7 +619,6 @@ export class CovidService {
         id: Date.now().toString() + this.user.uid,
         uid: this.user.uid
       }
-      console.log(c)
       this.firestore.collection("AllNews").doc(this.newsDetail.id).collection("Comments").doc(c.id).set(
         c, { merge: true }
       ).then(() => {
@@ -658,7 +646,6 @@ export class CovidService {
   }
 
   public closeModal(id) {
-    console.log("closing")
     if (id == "ModalNews") {
       if (document.getElementById("news") != undefined)
         (<HTMLFormElement>document.getElementById("news")).reset()
