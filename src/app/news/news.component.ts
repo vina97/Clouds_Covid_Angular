@@ -3,8 +3,6 @@ import { CovidService } from '../covid.service';
 import { News } from '../news.model';
 import { AngularFireStorage } from '@angular/fire/storage';
 
-//TODO: sort news
-
 @Component({
   selector: 'app-news',
   templateUrl: './news.component.html',

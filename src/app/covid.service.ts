@@ -10,7 +10,7 @@ import { User } from './user.model';
 import { Observable } from 'rxjs';
 import { AngularFireStorage } from '@angular/fire/storage';
 import { News } from './news.model';
-import { finalize } from 'rxjs/operators';
+import { finalize, retry } from 'rxjs/operators';
 import { Comment } from './comment.model'
 
 //TODO: remove user image (useless, only problematic)
@@ -333,7 +333,6 @@ export class CovidService {
           uid: name,
           name: name,
           email: "",
-          img: "",
           status: "none"
         }
         this.closeModal('id01')
@@ -351,7 +350,6 @@ export class CovidService {
       uid: cred.user.uid,
       name: cred.user.displayName,
       email: cred.user.email,
-      img: cred.user.photoURL,
       status: "editor"
     }
     this.setUser(this.user);
@@ -364,7 +362,6 @@ export class CovidService {
       name: user.name,
       email: user.email,
       status: user.status,
-      img: user.img
     })
   }
 
@@ -381,7 +378,6 @@ export class CovidService {
         uid: "",
         name: "",
         email: "",
-        img: "",
         status: ""
       }
       return result
@@ -401,7 +397,7 @@ export class CovidService {
   }
 
   public getNews() {
-    return this.firestore.collection("AllNews", ref => ref.orderBy('date', 'asc')).get()
+    return this.firestore.collection("AllNews").get()
   }
 
   addNewsWithFile(n: News, f: File) {
@@ -505,8 +501,7 @@ export class CovidService {
               date: doc.data()["date"],
               id: doc.data()["id"],
             })
-            this.allNews.reverse()
-            console.log(this.allNews)
+            this.allNews = this.sortbydateDecr(this.allNews)
           }
         })
         this.newsReady = true
@@ -527,8 +522,7 @@ export class CovidService {
               id: doc.data()["id"],
               uid: doc.data()["uid"]
             })
-            this.allNews.reverse()
-            console.log(this.allNews)
+            this.allNews = this.sortbydateDecr(this.allNews)
           }
         })
         this.newsReady = true
@@ -562,7 +556,6 @@ export class CovidService {
   public goToNews(n) {
     this.newsDetail = n
     console.log(this.newsDetail)
-    this.comments = []
     this.router.navigate(['./news/' + n.id])
     window.scrollTo(0, 0)
     this.setCurrentNews(n.id)
@@ -587,21 +580,23 @@ export class CovidService {
         this.newsDetail.uid = doc.data()["uid"];
         this.loadComments = true
         this.firestore.collection("AllNews").doc(id).collection("Comments").get().subscribe((snapshot) => {
+          this.comments = []
           snapshot.forEach(doc => {
             if (doc.exists) {
               let c = {
                 user: doc.data()["user"],
-                img: doc.data()["img"],
                 date: doc.data()["date"],
                 text: doc.data()["text"],
-                id: doc.data()["id"]
+                id: doc.data()["id"],
+                uid: doc.data()["uid"]
               }
-              this.comments.push(c)
+              console.log("comment")
+              this.comments.unshift(c)
+              this.comments = this.sortbydateDecr(this.comments)
             }
           })
         })
         this.loadComments = false
-
 
       }
       else {
@@ -630,10 +625,10 @@ export class CovidService {
     if (text != "") {
       let c = {
         user: this.user.name,
-        img: this.user.img,
         date: formatDate(new Date(), 'yyyy-MM-dd', 'en'),
         text: text,
-        id: Date.now().toString() + this.user.uid
+        id: Date.now().toString() + this.user.uid,
+        uid: this.user.uid
       }
       console.log(c)
       this.firestore.collection("AllNews").doc(this.newsDetail.id).collection("Comments").doc(c.id).set(
@@ -642,6 +637,12 @@ export class CovidService {
         this.comments.unshift(c)
       })
     }
+  }
+
+  public removeComment(c) {
+    this.firestore.collection("AllNews").doc(this.newsDetail.id).collection("Comments").doc(c.id).delete()
+    let index = this.comments.indexOf(c)
+    this.comments.splice(index, 1)
   }
 
   public displayModal(id) {
@@ -663,6 +664,12 @@ export class CovidService {
         (<HTMLFormElement>document.getElementById("news")).reset()
     }
     document.getElementById(id).style.display = 'none'
+  }
+
+  sortbydateDecr(v) {
+    return v.sort(function (a, b) {
+      return - (new Date(a.date).getTime() - new Date(b.date).getTime())
+    })
   }
 
 }

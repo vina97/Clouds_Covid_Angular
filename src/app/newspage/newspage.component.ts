@@ -2,9 +2,6 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { CovidService } from '../covid.service';
 
-//TODO: sort comments by date + delete possibility 
-//TOEVALUATE: avoid stretching image
-
 @Component({
   selector: 'app-newspage',
   templateUrl: './newspage.component.html',

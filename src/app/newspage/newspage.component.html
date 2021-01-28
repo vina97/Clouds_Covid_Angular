@@ -8,7 +8,7 @@
         <div class="nav-item dropdown ">
             <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button"
                 data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                Filter by Country
+                Go to Country
             </a>
             <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
                 <a class="dropdown-item" (click)="covidService.goToCountry(c)"
@@ -73,7 +73,7 @@
                 by {{covidService.newsDetail.author}}</p>
             <p><i class="fa fa-map"></i>{{covidService.newsDetail.country}}, <i
                     class="fa fa-calendar"></i>{{covidService.newsDetail.date}}</p>
-            <img class=" border" src={{covidService.newsDetail.image}} alt="News image" width="100%" height="300px">
+            <img class=" border text-center" src={{covidService.newsDetail.image}} alt="News image" height="300px">
 
         </div>
     </header>
@@ -82,7 +82,7 @@
         <div class="col-md-2">
         </div>
         <div class="col-md-8">
-            <div class="page-header">
+            <div class="page-header text-center">
                 <h2>Comments</h2>
             </div>
         </div>
@@ -91,7 +91,7 @@
     </div>
     <div class="text-center">
 
-        <button class="btn btn-success my-2 my-sm-0 " type="button" (click)="covidService.signInWithGoogle()"
+        <button class="btn btn-success my-2 pb-2" type="button" (click)="covidService.signInWithGoogle()"
             *ngIf="covidService.getUser().status !='editor'">login with Google to Comment</button>
         <div class="row" *ngIf="covidService.getUser().status =='editor'">
             <div class="col-md-2">
@@ -118,7 +118,11 @@
         <div class="col-md-8">
             <div class="media-body">
 
+                <p class="pull-right" (click)="covidService.removeComment(c)"
+                    *ngIf="covidService.getUser().uid == c.uid"><small> Remove Comment <i
+                            class="fa fa-times"></i></small></p>
                 <h4 class="media-heading user_name">{{c.user}}, <i class="fa fa-calendar"></i>{{c.date}}</h4>
+
 
                 {{c.text}}
                 <hr>
