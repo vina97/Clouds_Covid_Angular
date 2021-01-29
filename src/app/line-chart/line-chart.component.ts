@@ -26,8 +26,6 @@ export class LineChartComponent implements OnInit {
 
   ngOnInit(): void {
 
-    this.lineChartLabels = this.covidService.dayslabels;
-    this.lineChartData = [{ data: this.covidService.totalDeath, label: "Total Deaths" }, { data: this.covidService.totalRec, label: "Total Recoveries" }, { data: this.covidService.totalConf, label: "Total Confirmed" }]
 
   }
 }

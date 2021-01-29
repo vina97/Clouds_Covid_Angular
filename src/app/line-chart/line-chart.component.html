@@ -11,7 +11,9 @@
             <span class="sr-only">Loading...</span>
         </div>
     </div>
-    <canvas *ngIf="covidService.dataReady" baseChart width="400" height="400" [datasets]="lineChartData"
-        [labels]="lineChartLabels" [options]="lineChartOptions" [legend]="lineChartLegend" [chartType]="lineChartType">
+    <canvas *ngIf="covidService.dataReady" baseChart width="400" height="400" [datasets]="    [{ data: this.covidService.totalDeath, label: 'Total Deaths' }, { data:
+        this.covidService.totalRec, label: 'Total Recoveries' }, { data: this.covidService.totalConf,
+        label: 'Total Confirmed' }] " [labels]="covidService.dayslabels" [options]="lineChartOptions"
+        [legend]="lineChartLegend" [chartType]="lineChartType">
     </canvas>
 </div>

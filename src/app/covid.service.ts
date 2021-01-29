@@ -13,8 +13,6 @@ import { News } from './news.model';
 import { finalize, retry } from 'rxjs/operators';
 import { Comment } from './comment.model'
 
-//TODO: remove user image (useless, only problematic)
-
 
 
 export interface FilesUploadMetadata {
@@ -78,7 +76,7 @@ export class CovidService {
   constructor(private http: HttpClient, private afAuth: AngularFireAuth,
     private router: Router, private firestore: AngularFirestore, private afStorage: AngularFireStorage) { }
 
-
+  //API calls + info set for worldwide homepage
   setAllInfoHomePage() {
     this.dataReady = false
     this.dataSummaryReady = false
@@ -90,9 +88,11 @@ export class CovidService {
     this.totalDeath = []
     this.totalRec = []
     this.getSummary().subscribe(data => {
+      //get info for summary
       this.summary = new Info("Global", data["Global"]["TotalConfirmed"], data["Global"]["NewConfirmed"], data["Global"]["TotalRecovered"], data["Global"]["NewRecovered"], data["Global"]["TotalDeaths"], data["Global"]["NewDeaths"])
       this.byCountry = new Array<Info>();
       this.countries = []
+      //get info for country table
       for (let i = 0; i < data["Countries"].length; i++) {
         let elem = data["Countries"][i]
         this.countries.push(data["Countries"][i]["Country"])
@@ -100,7 +100,7 @@ export class CovidService {
       }
       this.dataSummaryReady = true
       this.getFromApril_API2().subscribe(d => {
-
+        //set last days data
         for (let i = 0; i < Object.keys(d["cases"]).length; i++) {
           this.totalConf[i] = Object.values(d["cases"])[i]
           this.totalRec[i] = Object.values(d["recovered"])[i]
@@ -108,12 +108,13 @@ export class CovidService {
           this.dayslabels[i] = Object.keys(d["cases"])[i]
 
         }
-
+        //compute last 7 info with math
         for (let j = this.totalConf.length - 7; j < this.totalConf.length; j++) {
           this.newConf[j + 7 - this.totalConf.length] = this.totalConf[j] - this.totalConf[j - 1]
           this.newRec[j + 7 - this.totalConf.length] = this.totalRec[j] - this.totalRec[j - 1]
           this.newDeath[j + 7 - this.totalConf.length] = this.totalDeath[j] - this.totalDeath[j - 1]
         }
+        //set today data
         this.newConf[this.newConf.length] = this.summary["newCases"]
         this.newDeath[this.newDeath.length] = this.summary["newDeath"]
         this.newRec[this.newRec.length] = this.summary["newRecovery"]
@@ -166,7 +167,7 @@ export class CovidService {
 
   }
 
-
+  //reset values + populate the country page
   setAllInfoCountry(c: string) {
     this.getCountries()
     this.current = c
@@ -189,6 +190,7 @@ export class CovidService {
     return this.http.get(this.covid_API + "summary", options)
   }
 
+  //Set all country possibilities for menu choice
   getCountries() {
     if (this.countries.length > 0)
       return;
@@ -212,6 +214,7 @@ export class CovidService {
     return this.http.get("https://corona.lmao.ninja/v2/historical/all")
   }
 
+  //use api to set all info for country page
   getAllFromCountry(country_name: string) {
     let options: { responseType?: "json" }
     this.http.get(this.covid_API + "dayone/country/" + country_name, options).subscribe(d => {
@@ -223,12 +226,14 @@ export class CovidService {
       }
       let i = sortable.length
       for (let elem in sortable) {
+        // push all elements retrieved
         this.totalConf[elem] = sortable[elem]["Confirmed"]
         this.totalRec[elem] = sortable[elem]["Recovered"]
         this.totalDeath[elem] = sortable[elem]["Deaths"]
         this.dayslabels[elem] = formatDate(new Date(new Date().getTime() - (i * 24 * 60 * 60 * 1000)), 'dd MMM', 'en')
         i = i - 1
       }
+      //sort arrays
       this.totalConf.sort(function (a, b) {
         var x = a; var y = b;
         return ((x < y) ? -1 : ((x > y) ? 1 : 0));
@@ -241,11 +246,13 @@ export class CovidService {
         var x = a; var y = b;
         return ((x < y) ? -1 : ((x > y) ? 1 : 0));
       })
+      //set last 7 days using math
       for (let j = sortable.length - 7; j < sortable.length; j++) {
         this.newConf[j + 7 - sortable.length] = this.totalConf[j] - this.totalConf[j - 1]
         this.newRec[j + 7 - sortable.length] = this.totalRec[j] - this.totalRec[j - 1]
         this.newDeath[j + 7 - sortable.length] = this.totalDeath[j] - this.totalDeath[j - 1]
       }
+      //set final day (today)
       this.dayslabels[this.totalRec.length] = formatDate(new Date(new Date().getTime() - (0 * 24 * 60 * 60 * 1000)), 'dd MMM', 'en')
       this.newConf[this.newConf.length] = this.summary["newCases"]
       this.newDeath[this.newDeath.length] = this.summary["newDeath"]
@@ -257,25 +264,36 @@ export class CovidService {
     })
   }
 
+  //check summary info up-to-date, else do API call and update
   getCountryInfoAPI(country_name: string) {
     let index = this.countries.indexOf(country_name)
+    this.dayslabels = []
+    this.newConf = []
+    this.newDeath = []
+    this.newRec = []
+    this.totalConf = []
+    this.totalDeath = []
+    this.totalRec = []
     this.firestore.collection("Countries").doc(country_name).get().subscribe((doc) => {
       let last: Date;
       let now = new Date();
       if (doc.exists) {
+        // have something in db 
         last = doc.data()["lastUpdate"].toDate();
 
         if (last.getFullYear() === now.getFullYear() &&
           last.getMonth() === now.getMonth() &&
           last.getDate() === now.getDate()) {
+          // db is up to date
           this.summary = new Info(doc.data()["name"], doc.data()["totalCases"], doc.data()["newCases"], doc.data()["totalRecovery"], doc.data()["newRecovery"], doc.data()["totalDeath"], doc.data()["newDeath"])
           this.dataSummaryReady = true
           this.getAllFromCountry(country_name)
           return
         }
       }
-
+      //db is not up to date (or country is not in db)
       this.getSummary().subscribe(data => {
+        //get info from API
         let elem = data["Countries"][index]
         let c = new Info(elem["Country"], elem["TotalConfirmed"], elem["NewConfirmed"], elem["TotalRecovered"], elem["NewRecovered"], elem["TotalDeaths"], elem["NewDeaths"])
         this.summary = c
@@ -299,6 +317,7 @@ export class CovidService {
     })
   }
 
+  //signup without google
   public signup(name, psw) {
     this.signup_error = false
     this.login_error = false
@@ -318,6 +337,7 @@ export class CovidService {
     })
   }
 
+  //login without google
   public loginWithPsw(name, psw) {
     this.login_error = false
     this.signup_error = false
@@ -337,6 +357,7 @@ export class CovidService {
     })
   }
 
+  //google login
   public async signInWithGoogle() {
     const cred = await this.afAuth.signInWithPopup(new firebase.auth.GoogleAuthProvider())
     this.user = {
@@ -351,6 +372,7 @@ export class CovidService {
   }
 
   setUser(user) {
+    //set user to db
     this.firestore.collection("Users").doc(user.uid).set({
       name: user.name,
       email: user.email,
@@ -377,6 +399,7 @@ export class CovidService {
     }
   }
 
+
   public signOut() {
     this.user = null;
     localStorage.removeItem("User")
@@ -384,6 +407,7 @@ export class CovidService {
     window.scrollTo(0, 0)
   }
 
+  //routing function
   public news() {
     this.router.navigate(['./news'])
     window.scrollTo(0, 0)
@@ -393,6 +417,7 @@ export class CovidService {
     return this.firestore.collection("AllNews").get()
   }
 
+  //upload custom file + news
   addNewsWithFile(n: News, f: File) {
     this.loading = true
     let randomId = Math.random().toString(36).slice(2)
@@ -414,14 +439,14 @@ export class CovidService {
   }
 
 
-
+  //upload news 
   public addNews(n: News) {
     this.loading = true
     n.id = Math.random().toString(36).slice(2) + n.uid
     this.firestore.collection("AllNews").doc(n.id).set(
       n, { merge: true }
     )
-
+    //add to country too
     if (n.country != "WorldWide") {
       this.firestore.collection("Countries").doc(n.country).collection("News").doc(n.id).set(
         n, { merge: true }
@@ -433,6 +458,7 @@ export class CovidService {
     this.closeModal("ModalNews")
   }
 
+  //remove uploaded file and set placeholder
   public removeFile(n: News) {
     let f = n.file
     n.image = "https://firebasestorage.googleapis.com/v0/b/covid-project-eurecom.appspot.com/o/covid19_icon.png?alt=media&token=758be0c7-a52f-486e-aec2-05882964bbc1";
@@ -442,6 +468,7 @@ export class CovidService {
     this.firestore.collection("AllNews").doc(n.id).set(
       n, { merge: true }
     ).then(() => {
+      //set placeholder image to database
       if (n.country != "WorldWide") {
         this.firestore.collection("Countries").doc(n.country).collection("News").doc(n.id).set(
           n, { merge: true }
@@ -449,6 +476,7 @@ export class CovidService {
 
       }
     }).then(() => {
+      //update what is shown
       let index = this.allNews.indexOf(n)
       this.allNews[index].image = "https://firebasestorage.googleapis.com/v0/b/covid-project-eurecom.appspot.com/o/covid19_icon.png?alt=media&token=758be0c7-a52f-486e-aec2-05882964bbc1";
       this.allNews[index].file = ""
@@ -458,6 +486,7 @@ export class CovidService {
 
   }
 
+  //routing function
   public goToCountry(cname) {
     if (cname != "WorldWide") {
       this.current = cname
@@ -474,12 +503,13 @@ export class CovidService {
   }
 
 
-
+  //perform a filter on the news by country 
   public filterNews(country) {
     this.newsReady = false
     this.current = country
     this.allNews = []
     if (country != "WorldWide") {
+      //filter news by country -> access the inner collection of the selected country
       this.firestore.collection("Countries").doc(country).collection("News", ref => ref.orderBy('date', 'asc')).get().subscribe((snapshot) => {
         snapshot.forEach(doc => {
           if (doc.exists) {
@@ -501,6 +531,7 @@ export class CovidService {
       })
     }
     else {
+      //get all news
       this.getNews().subscribe((snapshot) => {
         snapshot.forEach(doc => {
           if (doc.exists) {
@@ -524,8 +555,8 @@ export class CovidService {
   }
 
 
-
   public removeNews(n) {
+    //remove comments from news
     this.firestore.collection("AllNews").doc(n.id).collection("Comments").get().subscribe((snapshot) => {
       snapshot.forEach(doc => {
         if (doc.exists) {
@@ -534,11 +565,14 @@ export class CovidService {
         }
       })
     })
+    //remove news from allnews collection
     this.firestore.collection("AllNews").doc(n.id).delete()
 
+    //remove news from shown
     let index = this.allNews.indexOf(n)
     this.allNews.splice(index, 1)
 
+    //remove news from country collection
     if (n.country != "WorldWide") {
       this.firestore.collection("Countries").doc(n.country).collection("News").doc(n.id).delete()
     }
@@ -546,6 +580,7 @@ export class CovidService {
 
   }
 
+  //routing function
   public goToNews(n) {
     this.newsDetail = n
     this.router.navigate(['./news/' + n.id])
@@ -553,7 +588,7 @@ export class CovidService {
     this.setCurrentNews(n.id)
   }
 
-
+  // load clicked news info to show
   public setCurrentNews(id) {
     this.comments = []
     if (this.allNews == undefined) {
@@ -561,6 +596,7 @@ export class CovidService {
     }
     this.firestore.collection("AllNews").doc(id).get().subscribe((doc) => {
       if (doc.exists) {
+        //get details
         this.newsDetail.id = doc.data()["id"];
         this.newsDetail.author = doc.data()["author"];
         this.newsDetail.country = doc.data()["country"];
@@ -572,6 +608,7 @@ export class CovidService {
         this.newsDetail.uid = doc.data()["uid"];
         this.loadComments = true
         this.firestore.collection("AllNews").doc(id).collection("Comments").get().subscribe((snapshot) => {
+          //reset comments and get them all
           this.comments = []
           snapshot.forEach(doc => {
             if (doc.exists) {
@@ -598,6 +635,7 @@ export class CovidService {
 
   }
 
+  //function to move between news using arrows from the proper news page
   public loadNews(i) {
     let index = this.allNews.indexOf(this.newsDetail)
     let newindex = index + i
@@ -609,9 +647,11 @@ export class CovidService {
       this.goToNews(this.allNews[newindex])
   }
 
+  //collect and upload comment to current news
   public addComment() {
     let text = (<HTMLInputElement>document.getElementById("comment")).value
     if (text != "") {
+      //set comment
       let c = {
         user: this.user.name,
         date: formatDate(new Date(), 'yyyy-MM-dd', 'en'),
@@ -619,6 +659,7 @@ export class CovidService {
         id: Date.now().toString() + this.user.uid,
         uid: this.user.uid
       }
+      //upload to db
       this.firestore.collection("AllNews").doc(this.newsDetail.id).collection("Comments").doc(c.id).set(
         c, { merge: true }
       ).then(() => {
@@ -633,6 +674,7 @@ export class CovidService {
     this.comments.splice(index, 1)
   }
 
+  //search modal and diplsay it
   public displayModal(id) {
     document.getElementById(id).style.display = 'block'
     window.onclick = function (event) {
@@ -645,14 +687,17 @@ export class CovidService {
     }
   }
 
+  //close modal
   public closeModal(id) {
     if (id == "ModalNews") {
+      //reset form
       if (document.getElementById("news") != undefined)
         (<HTMLFormElement>document.getElementById("news")).reset()
     }
     document.getElementById(id).style.display = 'none'
   }
 
+  //quick function to sort items
   sortbydateDecr(v) {
     return v.sort(function (a, b) {
       return - (new Date(a.date).getTime() - new Date(b.date).getTime())

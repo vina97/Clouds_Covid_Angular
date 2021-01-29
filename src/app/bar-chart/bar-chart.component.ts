@@ -41,7 +41,6 @@ export class BarChartComponent implements OnInit {
     }
     labels.push(formatDate(new Date(new Date().getTime()), 'dd MMM', 'en'))
     this.barChartLabels = labels
-    this.barChartData = [{ data: this.covidService.newDeath, label: "New Death" }, { data: this.covidService.newRec, label: "New Recovered" }, { data: this.covidService.newConf, label: "New Confirmed" }]
 
   }
 
