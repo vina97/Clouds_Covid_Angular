@@ -1,4 +1,6 @@
-# Covid
+The full project can be seen in action at the following url: `covid-project-eurecom.web.app/`
+
+# Project
 
 This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 11.0.0.
 
